@@ -1,28 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Qin Yuan</title>
-  
-  <link href="/atom.xml" rel="self"/>
-  
-  <link href="http://yoursite.com/"/>
-  <updated>2017-07-21T16:44:55.000Z</updated>
-  <id>http://yoursite.com/</id>
-  
-  <author>
-    <name>Qin Yuan</name>
-    
-  </author>
-  
-  <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Sinatra扩展机制</title>
-    <link href="http://yoursite.com/2017/07/22/Sinatra%E6%89%A9%E5%B1%95%E6%9C%BA%E5%88%B6/"/>
-    <id>http://yoursite.com/2017/07/22/Sinatra扩展机制/</id>
-    <published>2017-07-21T16:43:19.000Z</published>
-    <updated>2017-07-21T16:44:55.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Sinatra通过<code>helpers</code>和<code>register</code>函数进行扩展<br>首先看一下<code>helpers</code>函数，用来是来扩展Base类的实例方法。<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">helpers</span><span class="params">(*extensions, &amp;block)</span></span></div><div class="line">  class_eval(&amp;block)   <span class="keyword">if</span> block_given?</div><div class="line">  <span class="keyword">include</span>(*extensions) <span class="keyword">if</span> extensions.any?</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Sinatra扩展机制 · Qin Yuan</title><meta name="description" content="Sinatra扩展机制 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Qin Yuan"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Sinatra扩展机制</h1><div class="post-info">Jul 22, 2017</div><div class="post-content"><p>Sinatra通过<code>helpers</code>和<code>register</code>函数进行扩展<br>首先看一下<code>helpers</code>函数，用来是来扩展Base类的实例方法。<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">helpers</span><span class="params">(*extensions, &amp;block)</span></span></div><div class="line">  class_eval(&amp;block)   <span class="keyword">if</span> block_given?</div><div class="line">  <span class="keyword">include</span>(*extensions) <span class="keyword">if</span> extensions.any?</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
 <p>在看一下<code>register</code>函数,用来扩展Base类的类方法<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">register</span><span class="params">(*extensions, &amp;block)</span></span></div><div class="line">  extensions &lt;&lt; Module.new(&amp;block) <span class="keyword">if</span> block_given?</div><div class="line">  @extensions += extensions</div><div class="line">  extensions.each <span class="keyword">do</span> <span class="params">|extension|</span></div><div class="line">    extend extension</div><div class="line">    extension.registered(<span class="keyword">self</span>) <span class="keyword">if</span> extension.respond_to?(<span class="symbol">:registered</span>)</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
 <p>两个方法都支持通过代码块扩展，也支持通过Module来扩展。</p>
 <p>两种扩展方法对应Sinatra的两种编程风格。</p>
@@ -56,17 +32,4 @@
 <p>扩展方法首先在<code>Delegator</code>模块调用<code>delegate</code>方法的时候添加你扩展的关键字名称，类似<code>delegate :get, :patch, ... , :my_fun</code>, 然后在<code>Helper</code>模块里定义<code>my_fun</code>的实现<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">module</span> <span class="title">Helpers</span></span></div><div class="line">  my_fun</div><div class="line">    p <span class="string">"my_fun"</span></div><div class="line">  <span class="keyword">end</span></div><div class="line">  ...</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
 <p>这样就可以像关键字一样使用my_fun了，当然也可以通过上面介绍的两个方法进行扩展。</p>
 <p>参考  <a href="http://saito.im/note/Sinatra-Extensions/" target="_blank" rel="external">http://saito.im/note/Sinatra-Extensions/</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Sinatra通过&lt;code&gt;helpers&lt;/code&gt;和&lt;code&gt;register&lt;/code&gt;函数进行扩展&lt;br&gt;首先看一下&lt;code&gt;helpers&lt;/code&gt;函数，用来是来扩展Base类的实例方法。&lt;br&gt;&lt;figure class=&quot;highlight ru
-    
-    </summary>
-    
-    
-      <category term="Sinatra" scheme="http://yoursite.com/tags/Sinatra/"/>
-    
-  </entry>
-  
-</feed>
+</div></article></div></main><footer><div class="paginator"></div><div class="copyright"><p>© 2015 - 2017 <a href="http://yoursite.com">Qin Yuan</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
