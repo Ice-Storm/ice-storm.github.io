@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2017/07/22/%E6%B5%85%E6%9E%90Node%E7%9A%84nextTick/</loc>
+    
+    <lastmod>2017-07-22T06:48:49.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2017/07/22/Sinatra%E6%89%A9%E5%B1%95%E6%9C%BA%E5%88%B6/</loc>
     
     <lastmod>2017-07-22T06:08:04.000Z</lastmod>
