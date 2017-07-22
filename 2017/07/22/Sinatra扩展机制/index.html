@@ -34,7 +34,7 @@
 <p>扩展方法首先在<code>Delegator</code>模块调用<code>delegate</code>方法的时候添加你扩展的关键字名称，类似<code>delegate :get, :patch, ... , :my_fun</code>, 然后在<code>Helper</code>模块里定义<code>my_fun</code>的实现<br><figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">module</span> <span class="title">Helpers</span></span></div><div class="line">  my_fun</div><div class="line">    p <span class="string">"my_fun"</span></div><div class="line">  <span class="keyword">end</span></div><div class="line">  ...</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
 <p>这样就可以像关键字一样使用my_fun了，当然也可以通过上面介绍的两个方法进行扩展。</p>
 <p>参考  <a href="http://saito.im/note/Sinatra-Extensions/" target="_blank" rel="external">http://saito.im/note/Sinatra-Extensions/</a></p>
-</div></article></div></main><footer><div class="paginator"><a href="/2017/07/22/浅析Node的nextTick/" class="prev">PREV</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'seansun';
+</div></article></div></main><footer><div class="paginator"><a href="/2017/07/22/浅析Node的nextTick/" class="prev">上一篇</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'seansun';
 var disqus_identifier = '2017/07/22/Sinatra扩展机制/';
 var disqus_title = 'Sinatra扩展机制';
 var disqus_url = 'http://yoursite.com/2017/07/22/Sinatra扩展机制/';
