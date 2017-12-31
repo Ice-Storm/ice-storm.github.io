@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-12-31T13:50:16.000Z</updated>
+  <updated>2017-12-31T13:52:14.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yoursite.com/2017/12/30/2017%E5%B9%B4%E5%B0%8F%E7%BB%93/"/>
     <id>http://yoursite.com/2017/12/30/2017年小结/</id>
     <published>2017-12-30T12:39:02.000Z</published>
-    <updated>2017-12-31T13:50:16.000Z</updated>
+    <updated>2017-12-31T13:52:14.000Z</updated>
     
     <content type="html"><![CDATA[<p>&emsp;&emsp;之前没有如此强烈的想写年终的总结的冲动，但是今年经历了太多的事情，不如就此回顾一下2017在展望一下2018吧。</p>
 <a id="more"></a>
@@ -34,9 +34,9 @@
 <p><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG43.jpeg" alt=""></p>
 <p>&emsp;&emsp;转正以后就慢慢参与公有云管理后台的开发，同事离职以后就全部负责起了这个项目，第一次维护开发一个逻辑很复杂的项目自然是非常开心，学到了不少东西也让我见识真正上线服务很多客户的云是怎么回事，整个管理后台不算前端大概两三万行rails的代码逻辑非常的复杂，集成了各种子系统真是Debug到飞起，现在玩的比较溜以后又可以研究研究其他好玩的东西啦。</p>
 <p>&emsp;&emsp;其他的就是看看ML啊，学习学习计算机组成，折腾一下Golang，玩玩docker，rancher什么的乐在其中。</p>
-<h3 id="旅行"><a href="#旅行" class="headerlink" title="旅行"></a>旅行</h3><p>&emsp;&emsp;说旅行有点牵强，但又实实在在的去了很多的地方，湛江，广州，酒泉，北京，天津，苏州，杭州还有一些记不得地方了，去这些地方多多少少都带着点目的，不是单单纯纯的去玩，除去回酒泉也就是家的那次吧。<br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG43.jpeg" alt=""><br>飘的地方多了反而想安稳一点了，在苏州的女票又总是抱怨我居无定所，算不上流浪法师但至少是够得上流浪码农了，<code>如果有大佬看到这公司在江浙一带又恰好缺一个写代码的，或者需要一个只存在在线上的码农不妨联系我</code>。</p>
+<h3 id="旅行"><a href="#旅行" class="headerlink" title="旅行"></a>旅行</h3><p>&emsp;&emsp;说旅行有点牵强，但又实实在在的去了很多的地方，湛江，广州，酒泉，北京，天津，苏州，杭州还有一些记不得地方了，去这些地方多多少少都带着点目的，不是单单纯纯的去玩，除去回酒泉也就是家的那次吧。<br>飘的地方多了反而想安稳一点了，在苏州的女票又总是抱怨我居无定所，算不上流浪法师但至少是够得上流浪码农了，<code>如果有大佬看到这公司在江浙一带又恰好缺一个写代码的，或者需要一个只存在在线上的码农不妨联系我</code>。</p>
 <p><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG46.jpeg" alt=""><br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG44.jpeg" alt=""><br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG45.jpeg" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG46.jpeg" alt=""><br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG47.jpeg" alt=""><br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG48.jpeg" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG47.jpeg" alt=""><br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/2017review/WechatIMG48.jpeg" alt=""></p>
 <h3 id="2018"><a href="#2018" class="headerlink" title="2018"></a>2018</h3><p>砥砺前行~</p>
 <ul>
 <li>深入学习一下Go语言，并且在项目里实践</li>
