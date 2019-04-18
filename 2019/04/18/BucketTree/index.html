@@ -8,7 +8,7 @@
 </ul>
 <h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>&emsp;&emsp;默克尔树是自底向上构建的，下面就是一颗典型的默克尔树。</p>
 <p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bucketTree/1.jpg?raw=true" alt="Alt text"></p>
-<p>首先计算ENTRY1-ENTRY4单元的数据哈希，然后分别存入到对应的叶子节点，这些叶子节点分别是HASH0-0,HASH0-1,HASH1-0,HASH1-1。<br>接着将相邻节点的哈希值合并成一个字符串，然后计算这个字符串的哈希值，得到的就是这两个节点父节点的哈希值。</p>
+<p>&emsp;&emsp;首先计算ENTRY1-ENTRY4单元的数据哈希，然后分别存入到对应的叶子节点，这些叶子节点分别是HASH0-0,HASH0-1,HASH1-0,HASH1-1。<br>接着将相邻节点的哈希值合并成一个字符串，然后计算这个字符串的哈希值，得到的就是这两个节点父节点的哈希值。</p>
 <p>&emsp;&emsp;如果用公式表示的话就是这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HASH 0 = Hash（HASH 0-0 + HASH 0-1）、</span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;如果树节点的个数是单数，就对它直接进行哈希运算，或者复制一次这个节点的哈希值，凑齐偶数个节点。</p>
 <p>&emsp;&emsp;重复上述过程，自底向上就可以构建整个默克尔树了。</p>
@@ -23,7 +23,7 @@
 <p>&emsp;&emsp;Bucket tree在扩展哈希表的同时，又在哈希表上建立了默克尔树。</p>
 <p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bucketTree/3.jpg?raw=true" alt="Alt text"></p>
 <p>&emsp;&emsp;哈希表由一系列的哈希桶（bucket）组成，每个桶中存储着若干被散列到该桶中的数据项（entry）所以数据项按序排列，每一个哈希桶有一个哈希值来标识整个桶，该哈希值是桶内所有数据通过哈希计算所得。</p>
-<p>除了底层的哈希表外，上层是一系列的默克尔树节点，一个默克尔树节点对应着下层的N个哈希桶或者默克尔树节点，这个N也称作默克尔树的聚合度。</p>
+<p>&emsp;&emsp;除了底层的哈希表外，上层是一系列的默克尔树节点，一个默克尔树节点对应着下层的N个哈希桶或者默克尔树节点，这个N也称作默克尔树的聚合度。</p>
 <h4 id="如此设计的目的："><a href="#如此设计的目的：" class="headerlink" title="如此设计的目的："></a>如此设计的目的：</h4><ul>
 <li>​利用默克尔树的特点，使每次树状态改变，重新计算哈希的代价最小；</li>
 <li>利用哈希表进行底层数据的维护，使得数据项均匀分布；</li>
@@ -38,4 +38,4 @@
 <li>​当有比较多数据变更的时候，非常容易散列到不同bucket，这个时候可以并行计算新bucket的哈希值，加速构建默克尔树。</li>
 <li>如果Bucket tree树比较大，并且用数据库来存储的话，加上读cache可以显著的提升性能。</li>
 </ul>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/08/28/kad/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2019 <a href="http://yoursite.com">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p><img style="height:20px;" src="https://dicloud.didistatic.com/static/dicloudpub/www/img/logo.69cc432da4.png"></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2018/08/28/kad/" class="next">下一篇</a></div><div class="copyright"><p>© 2017 - 2019 <a href="http://yoursite.com">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p><img style="height:20px;" src="https://dicloud.didistatic.com/static/dicloudpub/www/img/logo.69cc432da4.png"></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
