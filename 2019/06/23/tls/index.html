@@ -1,0 +1,42 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 详解TLS/SSL运行机制 · Qin Yuan's blog</title><meta name="description" content="详解TLS/SSL运行机制 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://yoursite.com/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">详解TLS/SSL运行机制</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Jun 23, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span><a href="/tags/区块链" class="post-title-link"><span style="margin-left:10px;color:blue">区块链</span></a><a href="/tags/密码学" class="post-title-link"><span style="margin-left:10px;color:blue">密码学</span></a></div></div><div class="post-content"><p>&emsp;&emsp;<code>TLS</code>传输层安全性协议（Transport Layer Security）及其前身<code>SSL</code>安全套接层（Secure Sockets Layer）是一种安全协议，目的是为互联网通信提供安全及数据完整性保障，<code>TLS/SSL</code>协议位于网络OSI七层模型的会话层，用来加密通信。</p>
+<a id="more"></a>
+<h3 id="TLS-SSL握手过程"><a href="#TLS-SSL握手过程" class="headerlink" title="TLS/SSL握手过程"></a><code>TLS/SSL</code>握手过程</h3><p>&emsp;&emsp;第一步，客户端（Client）以明文的形式发起请求信息（client_hello），其中信息包含；</p>
+<ul>
+<li>客户端生成的随机数<code>random_C</code></li>
+<li>支持的最高<code>TLS</code>协议版本</li>
+<li>客户端支持的加密套件<code>cipher suites</code></li>
+<li>支持的压缩算法列表</li>
+<li>扩展字段</li>
+</ul>
+<blockquote>
+<p> 身份加密套件包括： 身份认证算法Au ，采用的密钥交换算法（密钥协商），对称加密算法，信息摘要算法Mac（校验信息的完整性）</p>
+</blockquote>
+<hr>
+<p>&emsp;&emsp;第二步，服务端（Server）收到客户端发来的请求以后，返回协商的信息（server_hello），其中包括</p>
+<ul>
+<li>服务端生成的随机数<code>random_S</code></li>
+<li>使用<code>TLS</code>协议的版本</li>
+<li>使用的压缩算法版本</li>
+<li>选择的加密套件<code>cipher suites</code></li>
+<li>服务端配置的对应的证书链</li>
+</ul>
+<hr>
+<p>&emsp;&emsp;第三步，客户端（Server）收到服务端发来的请求以后，首先会检查服务端证书的合法性，如果合法就会进行如下操作；</p>
+<ul>
+<li>客户端生成第三个随机数字<code>pre-master</code></li>
+<li>计算协商秘钥<code>enc_key=Func(random_C, random_S, pre-master)</code></li>
+<li>计算之前通信的所有参数的hash作为<code>sessionSecret</code></li>
+</ul>
+<p>&emsp;&emsp;将<code>sessionSecret</code>和用证书携带的公钥加密<code>pre-master</code>发送给服务器（Server）</p>
+<hr>
+<p>&emsp;&emsp;第四步，服务端（Server）收到客户端发来的请求后，会进行如下操作</p>
+<ul>
+<li>用私钥解密或者<code>pre-master</code>的值</li>
+<li>基于<code>random_S</code>，<code>random_C</code>和<code>pre-master</code>计算协商秘钥<code>enc_key=Func(random_C, random_S, pre-master)</code></li>
+<li>验证<code>sessionSecret</code></li>
+</ul>
+<p>&emsp;&emsp;服务端进行完上面的操作以后，会用协商秘钥加密<code>sessionSecret</code>作为<code>encrypted_handshake_message</code>消息发送给客户端。</p>
+<hr>
+<p>&emsp;&emsp;第五步，客户端（Client）接收到<code>encrypted_handshake_message</code>消息以后，会用自己计算出的协商秘钥解密<code>encrypted_handshake_message</code>查看里面<code>sessionSecret</code>是否和自己生成的一致，如果一致则用协商出来的秘钥加密后续的通信。</p>
+<h3 id="双向认证"><a href="#双向认证" class="headerlink" title="双向认证"></a>双向认证</h3><p>&emsp;&emsp;上面的整个过程，都是客户端单向认证服务端，也是最为常用的场景。同时，服务端也可以要求验证客户端，比较常见的场景就是大额网银汇款转账会需要在电脑上插入<code>U盾</code>。<br>&emsp;&emsp;<code>U盾</code>中包含银行签发的证书用来验证客户端。<br>&emsp;&emsp;双向认证在单向认证第二步的时候，服务器会要求客户端发送证书，来校验客户端证书有效性。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/06/13/ecdh/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2019 <a href="http://yoursite.com">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p><img style="height:20px;" src="https://dicloud.didistatic.com/static/dicloudpub/www/img/logo.69cc432da4.png"></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

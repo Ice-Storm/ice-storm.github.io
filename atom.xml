@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-06-13T11:02:07.154Z</updated>
+  <updated>2019-06-23T03:46:50.658Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>详解TLS/SSL运行机制</title>
+    <link href="http://yoursite.com/2019/06/23/tls/"/>
+    <id>http://yoursite.com/2019/06/23/tls/</id>
+    <published>2019-06-23T03:44:24.000Z</published>
+    <updated>2019-06-23T03:46:50.658Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;<code>TLS</code>传输层安全性协议（Transport Layer Security）及其前身<code>SSL</code>安全套接层（Secure Sockets Layer）是一种安全协议，目的是为互联网通信提供安全及数据完整性保障，<code>TLS/SSL</code>协议位于网络OSI七层模型的会话层，用来加密通信。</p><a id="more"></a><h3 id="TLS-SSL握手过程"><a href="#TLS-SSL握手过程" class="headerlink" title="TLS/SSL握手过程"></a><code>TLS/SSL</code>握手过程</h3><p>&emsp;&emsp;第一步，客户端（Client）以明文的形式发起请求信息（client_hello），其中信息包含；</p><ul><li>客户端生成的随机数<code>random_C</code></li><li>支持的最高<code>TLS</code>协议版本</li><li>客户端支持的加密套件<code>cipher suites</code></li><li>支持的压缩算法列表</li><li>扩展字段</li></ul><blockquote><p> 身份加密套件包括： 身份认证算法Au ，采用的密钥交换算法（密钥协商），对称加密算法，信息摘要算法Mac（校验信息的完整性）</p></blockquote><hr><p>&emsp;&emsp;第二步，服务端（Server）收到客户端发来的请求以后，返回协商的信息（server_hello），其中包括</p><ul><li>服务端生成的随机数<code>random_S</code></li><li>使用<code>TLS</code>协议的版本</li><li>使用的压缩算法版本</li><li>选择的加密套件<code>cipher suites</code></li><li>服务端配置的对应的证书链</li></ul><hr><p>&emsp;&emsp;第三步，客户端（Server）收到服务端发来的请求以后，首先会检查服务端证书的合法性，如果合法就会进行如下操作；</p><ul><li>客户端生成第三个随机数字<code>pre-master</code></li><li>计算协商秘钥<code>enc_key=Func(random_C, random_S, pre-master)</code></li><li>计算之前通信的所有参数的hash作为<code>sessionSecret</code></li></ul><p>&emsp;&emsp;将<code>sessionSecret</code>和用证书携带的公钥加密<code>pre-master</code>发送给服务器（Server）</p><hr><p>&emsp;&emsp;第四步，服务端（Server）收到客户端发来的请求后，会进行如下操作</p><ul><li>用私钥解密或者<code>pre-master</code>的值</li><li>基于<code>random_S</code>，<code>random_C</code>和<code>pre-master</code>计算协商秘钥<code>enc_key=Func(random_C, random_S, pre-master)</code></li><li>验证<code>sessionSecret</code></li></ul><p>&emsp;&emsp;服务端进行完上面的操作以后，会用协商秘钥加密<code>sessionSecret</code>作为<code>encrypted_handshake_message</code>消息发送给客户端。</p><hr><p>&emsp;&emsp;第五步，客户端（Client）接收到<code>encrypted_handshake_message</code>消息以后，会用自己计算出的协商秘钥解密<code>encrypted_handshake_message</code>查看里面<code>sessionSecret</code>是否和自己生成的一致，如果一致则用协商出来的秘钥加密后续的通信。</p><h3 id="双向认证"><a href="#双向认证" class="headerlink" title="双向认证"></a>双向认证</h3><p>&emsp;&emsp;上面的整个过程，都是客户端单向认证服务端，也是最为常用的场景。同时，服务端也可以要求验证客户端，比较常见的场景就是大额网银汇款转账会需要在电脑上插入<code>U盾</code>。<br>&emsp;&emsp;<code>U盾</code>中包含银行签发的证书用来验证客户端。<br>&emsp;&emsp;双向认证在单向认证第二步的时候，服务器会要求客户端发送证书，来校验客户端证书有效性。</p>]]></content>
+    
+    <summary type="html">
+    
+      TLS/SSL秘钥协商算法
+    
+    </summary>
+    
+      <category term="区块链" scheme="http://yoursite.com/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="密码学" scheme="http://yoursite.com/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+    
+      <category term="区块链" scheme="http://yoursite.com/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="密码学" scheme="http://yoursite.com/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
+    
+  </entry>
   
   <entry>
     <title>ECDH秘钥协商算法原理</title>
