@@ -8,7 +8,7 @@
 </blockquote>
 <p>&emsp;&emsp;产生这个问题的根源在于，大家都可以生成公私钥对，而我们无法确认这对公私钥到底是属于谁，这个时候就需要一种方法可以证明一对公私钥的所有者是谁。</p>
 <h3 id="数字证书"><a href="#数字证书" class="headerlink" title="数字证书"></a>数字证书</h3><p>&emsp;&emsp;数字证书是一个经<code>数字证书认证机构CA</code>（Certificate Authority）认证签名的文件，包含拥有者的公钥以及相关的身份信息。<br>&emsp;&emsp;用户想要获得证书，应该先向<code>CA</code>提出申请，<code>CA</code>验证申请者的身份后，为其分配一个公钥与其身份信息绑定，为该信息信息进行签名，作为证书的一部分，然后把整个证书发送给申请者。<br>&emsp;&emsp;当需要鉴别证书真伪时，只需要用<code>CA</code>的公钥对证书上的签名进行验证，验证通过则证书有效。</p>
-<h3 id="证书结构"><a href="#证书结构" class="headerlink" title="证书结构"></a>证书结构</h3><p>&emsp;&emsp;证书的结构一般遵循<code>X.509</code>规范。<br><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ca/1.jpg?raw=true" alt="Alt text"></p>
+<h3 id="证书结构"><a href="#证书结构" class="headerlink" title="证书结构"></a>证书结构</h3><p>&emsp;&emsp;证书的结构一般遵循<code>X.509</code>规范。<br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/ca/1.png" alt="Alt text"></p>
 <p>字段含义</p>
 <ul>
 <li>版本： 使用<code>X.509</code>的版本，目前普遍使用<code>v3</code>版本；</li>
@@ -20,7 +20,7 @@
 <li>扩展信息：通常包含证书的用法，<code>证书吊销列表（Certificate Revocation List，CRL）</code>的发布地址等可选字段；</li>
 <li>签名：颁发者用私钥对证书信息的签名；</li>
 </ul>
-<p>可以通过查看浏览器查看网站证书来快速理解：<br><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ca/2.jpg?raw=true" alt="Alt text"></p>
+<p>可以通过查看浏览器查看网站证书来快速理解：<br><img src="https://raw.githubusercontent.com/Ice-Storm/ice-storm.github.io/master/images/ca/2.png" alt="Alt text"></p>
 <h3 id="证书类型"><a href="#证书类型" class="headerlink" title="证书类型"></a>证书类型</h3><ul>
 <li>自签名证书：自签名证书又称根证书，是自己发给自己的证书，证书的颁发者和主体同名；</li>
 <li>本地证书：<code>CA</code>颁发给申请者的证书；</li>
