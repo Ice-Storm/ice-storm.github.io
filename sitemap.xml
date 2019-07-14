@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2019/05/20/rlp/</loc>
+    
+    <lastmod>2019-07-14T12:40:43.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2018/04/10/pbft/</loc>
+    
+    <lastmod>2019-07-14T12:40:31.156Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2018/08/28/kad/</loc>
+    
+    <lastmod>2019-07-14T12:40:25.615Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2019/07/14/raft/</loc>
+    
+    <lastmod>2019-07-14T12:40:19.926Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2019/07/01/ca/</loc>
     
     <lastmod>2019-07-01T11:50:59.000Z</lastmod>
@@ -12,13 +40,6 @@
     <loc>http://yoursite.com/2019/06/23/tls/</loc>
     
     <lastmod>2019-06-23T03:46:50.658Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2019/05/20/rlp/</loc>
-    
-    <lastmod>2019-06-13T11:03:52.133Z</lastmod>
     
   </url>
   
@@ -51,23 +72,9 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/2018/08/28/kad/</loc>
-    
-    <lastmod>2018-08-28T09:31:09.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/2018/01/31/%E5%8C%BA%E5%9D%97%E9%93%BE%E6%8A%80%E6%9C%AF%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</loc>
     
     <lastmod>2018-04-10T12:50:46.537Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2018/04/10/pbft/</loc>
-    
-    <lastmod>2018-04-10T12:50:12.473Z</lastmod>
     
   </url>
   
