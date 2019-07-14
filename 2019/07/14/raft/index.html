@@ -6,7 +6,7 @@
 <p>通常情况下，系统中只有一个领导人并且其他节点全部都是跟随者，跟随者都是被动的，他们不会发送任何请求，只是简单的响应来自领导者或者候选人的请求</p>
 </blockquote>
 <p>&emsp;&emsp;下面是三个状态的状态转换图；</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/raft/1.jpg?raw=true" width="70%" height="70%"></p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/raft/1.png?raw=true" width="70%" height="70%"></p>
 <p>&emsp;&emsp;节点启动的时候，都是跟随者状态，在一段时间没有收到来自领导者的心跳，就从跟随者转变为候选人，发起选举；如果收到含自己的多数选票则转换到领导者；如果发现其他节点比自己更新，则切换到跟随者状态。为了确定其他节点比自己更新，<code>Raft</code>又引入了<code>任期（term）</code>的概念。</p>
 <p>&emsp;&emsp;算法起始，任期是0，当有节点当选<code>领导者</code>时，任期号为<code>1</code>，新领导人选出后，任期在之前的任期号加<code>1</code>。当节点从跟随者转化为候选人的时候，任期号也要增加<code>1</code>。</p>
 <blockquote>
