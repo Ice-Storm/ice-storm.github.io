@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-08-03T15:10:44.569Z</updated>
+  <updated>2019-08-13T11:42:56.644Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>分布式一致性协议之Pbft（一)</title>
+    <link href="http://yoursite.com/2019/08/13/pbft-1/"/>
+    <id>http://yoursite.com/2019/08/13/pbft-1/</id>
+    <published>2019-08-13T13:40:19.000Z</published>
+    <updated>2019-08-13T11:42:56.644Z</updated>
+    
+    <content type="html"><![CDATA[<p>&emsp;&emsp;<code>PBFT</code>算法和<code>Raft</code>算法解决的核心问题都是在分布式环境下如何保持集群状态的一致性，简而言之就是一组服务，给定一组操作，最后得到一致的结果。</p><a id="more"></a><p>&emsp;&emsp;<code>PBFT</code>算法假设的环境又比<code>Raft</code>算法更加的’恶劣‘，<code>Raft</code>算法只支持容错故障节点，而<code>PBFT</code>算法除了需要支持容错故障节点之外，还需要容忍作恶节点。</p><blockquote><p>作恶节点节点是指可能对接收到的消息作出截然相反的回复，甚至伪造消息。</p></blockquote><p>&emsp;&emsp;<code>PBFT</code>算法中节点只有两种角色，<code>主节点（primary）</code>和<code>副本（replica）</code>，两种角色之间可以相互转换。<br>&emsp;&emsp;<code>视图（view）</code>在<code>PBFT</code>算法中起到逻辑时钟的作用，<code>主节点</code>由 <code>p = v mode n</code>计算得出，随着<code>v</code>的增长可以看到<code>p</code>不断变化，论文里目前还是轮流坐庄的方法，这里是一个优化点。</p><p>&emsp;&emsp;为了更多的容错性，<code>PBFT</code>算法最大的容错节点数量<code>( n - 1 ) / 3</code>，也就是是说4个节点的集群最多只能容忍一个节点作恶或者故障。而<code>Raft</code>算法的最大容错节点是<code>( n - 1) / 2</code>，5个节点的集群可以容忍2个节点故障，而为什么只能容忍<code>f</code>个节点作恶呢？<br>&emsp;&emsp;节点总数是<code>n</code>，其中作恶节点有<code>f</code>，那么剩下的正确节点为<code>n- f</code>，意味着只要收到<code>n - f</code>个消息就能做出决定，但是这<code>n - f</code>个消息有可能有<code>f</code>个是由作恶节点冒充的，那么真实的消息是<code>n-f-f</code>个，为了多数一致，正确消息必须比<code>n-f-f</code>多1个，也就是<code>f + 1 &gt; n - f -f</code>也就是说<code>n</code>最小是<code>3f+1</code>。<br>&emsp;&emsp;或者可以这样理解，假定f个节点是故障节点，f个节点是作恶，那么达成一致需要的正确节点最少就是f+1个，当然这是最坏的情况，如果故障节点集合和拜占庭节点集合有重复，可以不需要f+1个正确节点，但是为了保证最坏的情况算法还能正常运行，所以必须保证正确节点数量是f+1个。</p><h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><p>&emsp;&emsp;客户端发送消息<code>m</code>给主节点<code>p</code>，主节点就开始了<code>PBFT</code>三阶段协议，三个阶段分别是<code>预准备（pre-prepare）</code>，<code>准备（prepare）</code>，<code>提交（commit）</code>。<br>&emsp;&emsp;其中<code>pre-prepare</code>和<code>prepare</code>阶段最重要的任务是保证，同一个<code>主节点</code>发出的请求在同一个<code>视图（view）</code>中的顺序是一致的，<code>prepare</code>和<code>commit</code>阶段最重要的任务是保证请求在不同<code>视图</code>之间的顺序是一致的。</p><ul><li>主节点收到客户端发送来的消息后，构造<code>pre-prepare</code>消息结构体<code>&lt; &lt;PRE-PREPARE, v, n, d&gt;, m &gt;</code>广播到集群中的其它节点。<ol><li><code>PRE-PREPARE</code>标识当前消息所处的协议阶段。</li><li><code>v</code>标识当前视图编号。</li><li><code>n</code>为主节点广播消息的一个唯一递增序号。</li><li><code>d</code>为<code>m</code>的消息摘要。</li><li><code>m</code>为客户端发来的消息。</li></ol></li><li><p><code>副本(backup)</code>收到主节点请求后，会对消息进行检查，检查通过会存储在本节点。当节点收到<code>2f+1</code>（包括自己）个相同的消息后，会进入<code>PREPARE</code>状态，广播消息<code>&lt; &lt;PREPARA, v, n, d, i&gt; &gt;</code>，其中<code>i</code>是本节点的编号。对消息的有效性有如下检查：</p><ol><li>检查收到的消息体中摘要<code>d</code>，是否和自己对<code>m</code>生成的摘要一致，确保消息的完整性。</li><li>检查<code>v</code>是否和当前视图<code>v</code>一致。</li><li>检查序号<code>n</code>是否在水线<code>h</code>和<code>H</code>之间，避免快速消耗可用序号。</li><li>检查之前是否接收过相同序号<code>n</code>和<code>v</code>，但是不同摘要<code>d</code>的消息。</li></ol></li><li><p><code>副本</code>收到<code>2f+1</code>（包括自己）个一致的<code>PREPARE</code>消息后，会进入<code>COMMIT</code>阶段，并且广播消息<code>&lt; COMMIT, v, n, D(m), i &gt;</code>给集群中的其它节点。在收到<code>PREPARE</code>消息后，副本同样也会对消息进行有效性检查，检查的内容是上文<code>a, b, c</code>。</p></li><li><p><code>副本</code>收到<code>2f+1</code>（包括自己）个一致的<code>COMMIT</code>个消息后执行<code>m</code>中包含的操作，其中，如果有多个<code>m</code>则按照序号<code>n</code>从小到大执行，执行完毕后发送执行成功的消息给客户端。</p></li></ul><p>下面就是算法的流程图：</p><p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/pbft1/pbft-1.png?raw=true" width="70%" height="70%"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&amp;emsp;&amp;emsp;&lt;code&gt;PBFT&lt;/code&gt;算法和&lt;code&gt;Raft&lt;/code&gt;算法解决的核心问题都是在分布式环境下如何保持集群状态的一致性，简而言之就是一组服务，给定一组操作，最后得到一致的结果。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="区块链" scheme="http://yoursite.com/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="分布式" scheme="http://yoursite.com/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    
+      <category term="区块链" scheme="http://yoursite.com/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="分布式" scheme="http://yoursite.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>分布式一致性协议之Raft(三)</title>
