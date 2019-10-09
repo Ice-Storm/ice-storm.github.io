@@ -14,7 +14,7 @@
 <p>&emsp;&emsp;乍一看的反应是账户数据以一个map的形式存在<code>stateObjects</code>字段里，但事实是账户的数据是存储在<code>trie</code>中的，存储的形式和单个合约里状态的状态是一样的。<br>&emsp;&emsp;<code>stateObjects</code>只是作为一个缓存，当创建，获得<code>stateObject</code>的时候会添加进去，提升读取的性能。<br>&emsp;&emsp;我们知道这些账户数据最终是存储在<code>LevelDB</code>中的，<code>stateObjects</code>相当于一级缓存，如果查询不到，可以到<code>trie</code>中查询，如果都查询不到就只能去查找数据库了。<br>&emsp;&emsp;<code>StateDB</code>也支持快照和回滚操作，实现的比较简单，具体的数据在<code>jornal</code>中，而快照的索引，需要回滚的时候只需求拿到索引暂存的数据反序列化回来就可以了。</p>
 </div></article></div></main><footer><div class="paginator"><a href="/2019/10/08/mpt/" class="prev">PREV</a><a href="/2019/09/24/evm-2/" class="next">NEXT</a></div><div id="container"></div><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script><script>var gitment = new Gitment({
     id: 'Tue Oct 08 2019 21:01:00 GMT+0800',
-    owner: 'qyuan',
+    owner: 'Ice-Storm',
     repo: 'ice-storm.github.io',
     oauth: {
         client_id: '0dc72a011c85518eff6a',
