@@ -13,10 +13,10 @@
 <p>&emsp;&emsp;但是当插入的数据量大幅提升的时候，甚至<code>bitMap</code>全部被置为<code>1</code>的时候问题就很严重了，误识率就非常高了，这个也是根据不同场景实现布隆过滤器所要考虑的问题。</p>
 <p>&emsp;&emsp;尽管有这样的问题，但是仍然不能掩盖布隆过滤器的<code>空间利用率</code>和<code>查询时间</code>远超其他算法，插入数据和查询数据的时间复杂度都是<code>O(k)</code></p>
 <h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>&emsp;&emsp;比较典型的应用场景就是检查垃圾邮箱的地址，比如我建立了一个垃圾邮件的布隆过滤器，当新邮件到来的时候我要快速的判断这封邮件是不是垃圾邮件。<br>&emsp;&emsp;还可以用来判断一个URL是不是恶意链接等等。<br>&emsp;&emsp;以太坊大量的用到了布隆过滤器，用来定位查找日志等。</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2019/05/20/rlp/" class="prev">上一篇</a><a href="/2019/04/18/BucketTree/" class="next">下一篇</a></div><div id="container"></div><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script><script>var gitment = new Gitment({
+</div></article></div></main><footer><div class="paginator"><a href="/2019/05/20/rlp/" class="prev">PREV</a><a href="/2019/04/18/BucketTree/" class="next">NEXT</a></div><div id="container"></div><link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css"><script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script><script>var gitment = new Gitment({
     id: 'Tue Apr 30 2019 22:46:08 GMT+0800',
     owner: 'qyuan',
-    repo: 'github.com/Ice-Storm/ice-storm.github.io',
+    repo: 'ice-storm.github.io',
     oauth: {
         client_id: '0dc72a011c85518eff6a',
         client_secret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
