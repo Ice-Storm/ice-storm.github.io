@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-12T04:01:35.678Z</updated>
+  <updated>2019-10-12T04:06:19.611Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="qyuan.top/2019/10/12/mpt-2/"/>
     <id>qyuan.top/2019/10/12/mpt-2/</id>
     <published>2019-10-12T13:56:38.000Z</published>
-    <updated>2019-10-12T04:01:35.678Z</updated>
+    <updated>2019-10-12T04:06:19.611Z</updated>
     
     <content type="html"><![CDATA[<p>在<a href="http://qyuan.top/2019/10/08/mpt/">「Merkle Patricia Tree (MPT) 树详解之数据结构（一）」</a>介绍了以太坊MPT树的结构，但是如何将MPT树持久化呢？以太坊采用LevelDB做数据库，如何将MPT树的节点映射成键值对存储到LevelDB呢？</p>
 <a id="more"></a>
@@ -40,10 +40,8 @@
 <li>将Raw输入的每个字符（1byte）拆分成2个nibble，前4位和后4位各一个nibble；</li>
 <li>将每个nibble扩展为1个byte（8个bit）；</li>
 <li>然后分别将Raw编码后的十六进制结果的每个<code>b</code>进行如下操作<ul>
-<li>b / 16；<ul>
+<li>b / 16；</li>
 <li>b % 16；</li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
