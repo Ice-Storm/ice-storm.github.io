@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-12T04:06:19.611Z</updated>
+  <updated>2019-10-12T04:07:10.587Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="qyuan.top/2019/10/12/mpt-2/"/>
     <id>qyuan.top/2019/10/12/mpt-2/</id>
     <published>2019-10-12T13:56:38.000Z</published>
-    <updated>2019-10-12T04:06:19.611Z</updated>
+    <updated>2019-10-12T04:07:10.587Z</updated>
     
     <content type="html"><![CDATA[<p>在<a href="http://qyuan.top/2019/10/08/mpt/">「Merkle Patricia Tree (MPT) 树详解之数据结构（一）」</a>介绍了以太坊MPT树的结构，但是如何将MPT树持久化呢？以太坊采用LevelDB做数据库，如何将MPT树的节点映射成键值对存储到LevelDB呢？</p>
 <a id="more"></a>
@@ -80,12 +80,12 @@
     
       <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
-      <category term="P2P网络" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/P2P%E7%BD%91%E7%BB%9C/"/>
+      <category term="存储" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AD%98%E5%82%A8/"/>
     
     
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
-      <category term="P2P网络" scheme="qyuan.top/tags/P2P%E7%BD%91%E7%BB%9C/"/>
+      <category term="存储" scheme="qyuan.top/tags/%E5%AD%98%E5%82%A8/"/>
     
   </entry>
   
@@ -94,7 +94,7 @@
     <link href="qyuan.top/2019/10/08/mpt/"/>
     <id>qyuan.top/2019/10/08/mpt/</id>
     <published>2019-10-08T13:55:30.000Z</published>
-    <updated>2019-10-12T03:59:07.741Z</updated>
+    <updated>2019-10-12T04:07:21.009Z</updated>
     
     <content type="html"><![CDATA[<p>在之前的EVM系列的文章中，其实一直有一个问题没有解决，那就是Storage持久化的数据最终是以什么样的形式，保存在哪里？数以万计的合约有数以万计的storage变量，这些变量如何快速的读写？</p>
 <a id="more"></a>
@@ -155,12 +155,12 @@
     
       <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
-      <category term="P2P网络" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/P2P%E7%BD%91%E7%BB%9C/"/>
+      <category term="存储" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AD%98%E5%82%A8/"/>
     
     
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
-      <category term="P2P网络" scheme="qyuan.top/tags/P2P%E7%BD%91%E7%BB%9C/"/>
+      <category term="存储" scheme="qyuan.top/tags/%E5%AD%98%E5%82%A8/"/>
     
   </entry>
   
