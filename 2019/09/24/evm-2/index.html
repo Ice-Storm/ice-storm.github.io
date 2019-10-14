@@ -50,7 +50,7 @@
 <p>&emsp;&emsp;最后用remix编译得到;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">key: 0x0000000000000000000000000000000000000000000000000000000000000000</div><div class="line">value: 0xaabbcc0000000000000000000000000000000000000000000000000000000006</div></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;当bytes和string的长度小于31字节的时候可以这样放到一个插槽里，但是当大于31字节的时候，就采用存储动态数组的方式。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>&emsp;&emsp;EVM的存储器就是一个健值数据库，当改变里面的任何一点东西，根节点的校验和也会改变，如果两个根节点拥有相同的校验和，存储的数据就能保持一致。</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2019/10/08/statedb/" class="prev">PREV</a><a href="/2019/09/12/evm/" class="next">NEXT</a></div><link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+</div></article></div></main><footer><div class="paginator"><a href="/2019/10/08/statedb/" class="prev">PREV</a><a href="/2019/09/12/evm/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
     clientID: '0dc72a011c85518eff6a',
     clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
     repo: 'ice-storm.github.io',
