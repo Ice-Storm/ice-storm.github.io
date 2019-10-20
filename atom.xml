@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-12T04:07:10.587Z</updated>
+  <updated>2019-10-20T12:59:25.363Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -14,6 +14,71 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>以太坊区块结构</title>
+    <link href="qyuan.top/2019/10/20/block/"/>
+    <id>qyuan.top/2019/10/20/block/</id>
+    <published>2019-10-20T12:56:12.000Z</published>
+    <updated>2019-10-20T12:59:25.363Z</updated>
+    
+    <content type="html"><![CDATA[<p>区块就是交易的集合，公链链或者联盟链将交易打包成区块以后会进行持久化存储。</p>
+<a id="more"></a>
+<p>看一下经典的以太坊区块结构。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/block/1.png?raw=true" width="85%" height="50%"></p>
+<p>从上图可以看到，区块由两部分组成，分别是区块头（header）和区块体（body）两部分。</p>
+<h3 id="区块头（header）"><a href="#区块头（header）" class="headerlink" title="区块头（header）"></a>区块头（header）</h3><p>区块头存储了区块的元信息，用来对区块内容进行一些标识校验说明等。我们将区块头里字段分为两部分，第一部分是一般而言是在联盟链场景需要的，另一部分是公链场景需要的。</p>
+<h5 id="通用字段"><a href="#通用字段" class="headerlink" title="通用字段"></a>通用字段</h5><ul>
+<li>ParentHash： 父区块的哈希值。</li>
+<li>Root：世界状态的哈希，stateDB的RLP编码后的哈希值。</li>
+<li>TxHash（transaction root hash）：交易字典树的根哈希，由本区块所有交易的交易哈希算出。</li>
+<li>ReceptHash：收据树的哈希。</li>
+<li>Time：区块产生出来的Unix时间戳。</li>
+<li>Number：区块号。</li>
+<li>Bloom：布隆过滤器，快速定位日志是否在这个区块中。</li>
+</ul>
+<h5 id="公链场景"><a href="#公链场景" class="headerlink" title="公链场景"></a>公链场景</h5><ul>
+<li>Coinbase：挖出这个块的矿工地址，因为挖出块所奖励的ETH就会发放到这个地址。</li>
+<li>Difficulty：当前工作量证明（Pow）算法的复杂度。</li>
+<li>GasLimit: 每个区块Gas的消耗上线。</li>
+<li>GasUsed：当前区块所有交易使用的Gas之和。</li>
+<li>MixDigest: 挖矿得到的Pow算法证明的摘要，也就是挖矿的工作量证明。</li>
+<li>nonce：挖矿找到的满足条件的值。</li>
+</ul>
+<p>一般而言一个类以太坊的联盟链是需要上面介绍的通用字段的，但是也不绝对，还可能与选择的共识算法，隐私保护策略，设计偏好有关。</p>
+<h3 id="区块体（Body）"><a href="#区块体（Body）" class="headerlink" title="区块体（Body）"></a>区块体（Body）</h3><p>区块体包括这个区块打包的所有交易，在一些链的设计中，并不像以太坊区分header和body，而是整合在一起。</p>
+<h3 id="区块存储"><a href="#区块存储" class="headerlink" title="区块存储"></a>区块存储</h3><p>以太坊在存储区块的时候，区块头和区块体其实是分开存储的，其实也很容易理解，分开存储可以提供更多的灵活性，比如不用保存全部区块数据的轻节点。</p>
+<h5 id="区块头存储"><a href="#区块头存储" class="headerlink" title="区块头存储"></a>区块头存储</h5><p>以太坊通过如下方式将区块头转换成键值对存储在LevelDB中；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">headerPrefix + num + hash  -&gt; rlp(header)</div><div class="line"></div><div class="line">Tips: num是以大端序的形式转换成bytes的，其中headerPrefix的值是 []byte(&quot;h&quot;)</div></pre></td></tr></table></figure></p>
+<h5 id="区块体存储"><a href="#区块体存储" class="headerlink" title="区块体存储"></a>区块体存储</h5><p>区块体的存储方式也是类似；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">bodyPrefix + num + hash -&gt; rlp(block)</div><div class="line"></div><div class="line">Tips: num是以大端序的形式转换成bytes的，其中bodyPrefix的值是[]byte(&quot;b&quot;)</div></pre></td></tr></table></figure></p>
+<h3 id="潜在问题"><a href="#潜在问题" class="headerlink" title="潜在问题"></a>潜在问题</h3><p>假设在一个联盟链的场景下，采用了BFT类的算法，有一个重量级的业务跑在上面，日积月累产生了大量的数据，是否会出现LevelDB的读写性能大幅下降拖慢系统的响应速度？单机存储无法满足需要？存储了大量的不会使用的历史数据？</p>
+<p>在联盟链的场景下，由于共识速度的提升，导致出块速度也大幅提升，原本在公链场景下不存在的区块写入瓶颈，现在反而成了拖慢系统运行速度的重要因素了。</p>
+<p>观察一下区块数据的存储就可以发现下面的这些特点；</p>
+<ul>
+<li>区块数据只会增加；</li>
+<li>无需对历史区块进行修改；</li>
+<li>无需对区块数据进行复杂操作，比如聚合，运算等；</li>
+</ul>
+<p>归纳一下就是顺序写，随机读和迭代（Iterator），针对这些特点Hyperledger Fabric设计了基于文件的存储方式，在Fabric中区块数据是以一个个文件的形式存在。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">chains</div><div class="line">  |----mychannel</div><div class="line">  |----|----blockfile_000000</div><div class="line">index</div><div class="line">  |----000001.log</div><div class="line">  |----CURRENT</div><div class="line">  |----LOCK</div><div class="line">  |----LOG</div><div class="line">  |----MANIFEST-000000</div></pre></td></tr></table></figure>
+<p>其中blockfile_000000是区块数据，index则是索引游标等元信息，这种方式速度很快，方便做数据归档，也可以避免像LevelDB等数据库数据越写越慢的问题，主流联盟链都是采用类似的方案。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      以太坊区块结构
+    
+    </summary>
+    
+      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="以太坊" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
+    
+    
+      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="以太坊" scheme="qyuan.top/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
+    
+  </entry>
   
   <entry>
     <title>Merkle Patricia Tree (MPT) 树详解之数据持久化（二）</title>
@@ -209,7 +274,7 @@
     <link href="qyuan.top/2019/09/24/evm-2/"/>
     <id>qyuan.top/2019/09/24/evm-2/</id>
     <published>2019-09-24T12:50:28.000Z</published>
-    <updated>2019-09-24T12:04:37.993Z</updated>
+    <updated>2019-10-20T12:59:17.939Z</updated>
     
     <content type="html"><![CDATA[<p>&emsp;&emsp;<a href="http://qyuan.top/2019/09/12/evm/">EVM深度分析之数据存储（一）</a>介绍了EVM中不同的数据存储位置的特点，但是并没有对应到具体的存储位置，这篇文章对Storage中的数据是如何被EVM存储做了简要的分析。</p>
 <a id="more"></a>
@@ -270,6 +335,10 @@
       EVM以太坊虚拟机
     
     </summary>
+    
+      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="以太坊" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
     
     
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
@@ -1205,83 +1274,6 @@
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
       <category term="P2P网络" scheme="qyuan.top/tags/P2P%E7%BD%91%E7%BB%9C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Fabric共识模块源码分析</title>
-    <link href="qyuan.top/2018/04/10/pbft/"/>
-    <id>qyuan.top/2018/04/10/pbft/</id>
-    <published>2018-04-10T12:15:41.000Z</published>
-    <updated>2019-07-14T12:40:31.156Z</updated>
-    
-    <content type="html"><![CDATA[<p>正好这些天要有一个需求要帮客户魔改Fabric-v0.6，把一些hyperchain的高级特性移植过去，借此机会把之前看过的源码在梳理一下。<br>下面就是对Fabric共识模块的源码分析和梳理，代码都是以Fabric-v0.6-preview为例，在1.0及后续版本中都移除了PBFT部分，用了更好的SBFT，目前这一部分还在开发中。</p>
-<a id="more"></a>
-<h3 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h3><p>可以看到共识模块目录如下。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">consensus</div><div class="line">├── controller</div><div class="line">├── executor</div><div class="line">├── helper</div><div class="line">│   └── persist</div><div class="line">├── noops</div><div class="line">├── pbft</div><div class="line">└── util</div><div class="line">    └── events</div></pre></td></tr></table></figure>
-<p>目录含义如下</p>
-<ul>
-<li><code>controller</code> 用来控制Fabric选择什么样的共识算法，默认是<code>noops</code>。</li>
-<li><code>executor</code> 封装了消息队列中对交易的处理。</li>
-<li><code>helper</code> 对外提供接口调用和数据持久化接口。</li>
-<li><code>noops</code> 提供了如何编写Fabric共识算法的Demo。</li>
-<li><code>pbft</code> PBFT算法的具体实现。</li>
-<li><code>util</code> 实现了一个peer节点到共识算法的一个消息通道，和一个消息队列。</li>
-</ul>
-<h3 id="流程概览"><a href="#流程概览" class="headerlink" title="流程概览"></a>流程概览</h3><p>Fabric网络通过一个<code>EventLoop</code>和共识算法进行交互，所有的操作都通过对事件循环中的事件监听进行推进。</p>
-<p>整体流程如下图所示。<br><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/2017review/PBFT.jpeg?raw=true" alt="Alt text"></p>
-<h3 id="Consensus模块接口"><a href="#Consensus模块接口" class="headerlink" title="Consensus模块接口"></a>Consensus模块接口</h3><p><code>fabric/consensus/consensus.go</code>对外提供共识模块的方法调用。</p>
-<p>其中最核心也是每个算法必须实现的接口是<code>Consenter</code>。<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> ExecutionConsumer <span class="keyword">interface</span> &#123;</div><div class="line">	Executed(tag <span class="keyword">interface</span>&#123;&#125;)                                </div><div class="line">	Committed(tag <span class="keyword">interface</span>&#123;&#125;, target *pb.BlockchainInfo)    </div><div class="line">	RolledBack(tag <span class="keyword">interface</span>&#123;&#125;)                              </div><div class="line">	StateUpdated(tag <span class="keyword">interface</span>&#123;&#125;, target *pb.BlockchainInfo)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">type</span> Consenter <span class="keyword">interface</span> &#123;</div><div class="line">	RecvMsg(msg *pb.Message, senderHandle *pb.PeerID) error</div><div class="line">	ExecutionConsumer</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>接口的具体实现在<code>fabric/consensus/pbft/external.go</code>。</p>
-<p>因为对交易的操作都是异步的，所以必须手动实现<code>Executed</code>，<code>Committed</code>，<code>RolledBack</code>，<code>StateUpdated</code>方法来监听对应动作的完成。</p>
-<p><code>RecvMsg</code>方法用来从不用的<code>peer</code>节点接收消息。</p>
-<h3 id="初始化共识模块"><a href="#初始化共识模块" class="headerlink" title="初始化共识模块"></a>初始化共识模块</h3><p>共识算法引擎在<code>peer</code>启动的时候初始化，初始化的具体函数如下所示。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// consensus/helper/engine.go</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetEngine</span><span class="params">(coord peer.MessageHandlerCoordinator)</span> <span class="params">(peer.Engine, error)</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> err error</div><div class="line">	engineOnce.Do(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">		engine = <span class="built_in">new</span>(EngineImpl)</div><div class="line">		engine.helper = NewHelper(coord)</div><div class="line">		engine.consenter = controller.NewConsenter(engine.helper)</div><div class="line">		engine.helper.setConsenter(engine.consenter)</div><div class="line">		engine.peerEndpoint, err = coord.GetPeerEndpoint()</div><div class="line">		engine.consensusFan = util.NewMessageFan()</div><div class="line"></div><div class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</div><div class="line">			logger.Debug(<span class="string">"Starting up message thread for consenter"</span>)</div><div class="line"></div><div class="line">			<span class="keyword">for</span> msg := <span class="keyword">range</span> engine.consensusFan.GetOutChannel() &#123;</div><div class="line">				engine.consenter.RecvMsg(msg.Msg, msg.Sender)</div><div class="line">			&#125;</div><div class="line">		&#125;()</div><div class="line">	&#125;)</div><div class="line">	<span class="keyword">return</span> engine, err</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>GetEngine</code>的作用是进行共识模块的初始化，同时启动一个<code>goroutine</code>等待消息进入共识。</p>
-<p>具体的<code>engine.consenter</code>是在<code>consensus/controller/controller.go</code>里进行选择。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// consensus/controller/controller.go</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewConsenter</span><span class="params">(stack consensus.Stack)</span> <span class="title">consensus</span>.<span class="title">Consenter</span></span> &#123;</div><div class="line"></div><div class="line">	plugin := strings.ToLower(viper.GetString(<span class="string">"peer.validator.consensus.plugin"</span>))</div><div class="line">	<span class="keyword">if</span> plugin == <span class="string">"pbft"</span> &#123;</div><div class="line">		logger.Infof(<span class="string">"Creating consensus plugin %s"</span>, plugin)</div><div class="line">		<span class="keyword">return</span> pbft.GetPlugin(stack)</div><div class="line">	&#125;</div><div class="line">	logger.Info(<span class="string">"Creating default consensus plugin (noops)"</span>)</div><div class="line">	<span class="keyword">return</span> noops.GetNoops(stack)</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>默认选择的是<code>noops</code>，如果需要添加自己编写的共识模块需要在这里自行添加判断。</p>
-<blockquote>
-<p><code>noops</code> 只是演示如何编写Fabric共识模块，不要用在生产环境。</p>
-</blockquote>
-<p>如果选择了<code>PBFT</code>则会调用<code>consensus/pbft/pbft.go</code>进行初始化。</p>
-<p>使用<code>PBFT</code>的<code>batch</code>模式启动时会调用<code>newObcBatch</code>进行<code>PBFT</code>算法初始化。</p>
-<blockquote>
-<p>PBFT只有<code>batch</code>一种模式。</p>
-</blockquote>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// consensus/pbft/batch.go</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">newObcBatch</span><span class="params">(id <span class="keyword">uint64</span>, config *viper.Viper, stack consensus.Stack)</span> *<span class="title">obcBatch</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> err error</div><div class="line"></div><div class="line">    ...</div><div class="line"></div><div class="line">    op.manager = events.NewManagerImpl()	</div><div class="line">	op.manager.SetReceiver(op)</div><div class="line">	etf := events.NewTimerFactoryImpl(op.manager)</div><div class="line">	op.pbft = newPbftCore(id, config, op, etf)</div><div class="line">	op.manager.Start()</div><div class="line">	blockchainInfoBlob := stack.GetBlockchainInfoBlob()</div><div class="line">	op.externalEventReceiver.manager = op.manager</div><div class="line">	</div><div class="line">	...</div><div class="line">	</div><div class="line">	<span class="keyword">return</span> op</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>newObcBatch</code>主要做了这几项工作</p>
-<ul>
-<li>初始化了<code>eventLoop</code>的消息队列。</li>
-<li>设置了消息的接收者，用来处理对应的消息。</li>
-<li>创建监听消息超时的定时器。</li>
-<li>初始化<code>pbft</code>算法。</li>
-<li>启动消息队列，不断监听事件的到来并且分发给接收者处理。</li>
-</ul>
-<h3 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h3><p>Fabric的共识消息是通过<code>eventLoop</code>注射给对应处理函数的。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// consensus/util/events/events.go</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">SendEvent</span><span class="params">(receiver Receiver, event Event)</span></span> &#123;</div><div class="line">	next := event</div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">		next = receiver.ProcessEvent(next)</div><div class="line">		<span class="keyword">if</span> next == <span class="literal">nil</span> &#123;</div><div class="line">			<span class="keyword">break</span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(em *managerImpl)</span> <span class="title">Inject</span><span class="params">(event Event)</span></span> &#123;</div><div class="line">	<span class="keyword">if</span> em.receiver != <span class="literal">nil</span> &#123;</div><div class="line">		SendEvent(em.receiver, event)</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(em *managerImpl)</span> <span class="title">eventLoop</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">for</span> &#123;</div><div class="line">		<span class="keyword">select</span> &#123;</div><div class="line">		<span class="keyword">case</span> next := &lt;-em.events:</div><div class="line">			em.Inject(next)</div><div class="line">		<span class="keyword">case</span> &lt;-em.exit:</div><div class="line">			logger.Debug(<span class="string">"eventLoop told to exit"</span>)</div><div class="line">			<span class="keyword">return</span></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p><code>eventLoop</code>函数不断的从<code>em.events</code>里取出事件，通过<code>Inject</code>注射给对应的接收者，注意，通过<code>SendEvent</code>注射给接收者的<code>ProcessEvent</code>方法。</p>
-<p><code>SendEvent</code>函数实现非常有意思，如果<code>receiver.ProcessEvent</code>的返回不为<code>nil</code>则不断的调用<code>receiver.ProcessEvent</code>直到找到对应的消息处理函数，在<code>ProcessEvent</code>函数中，其余<code>case</code>均为事件处理函数，唯独<code>pbftMessage</code>依赖<code>SendEvent</code>发送消息给其余函数处理。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// consensus/pbft/pbft-core.go</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(instance *pbftCore)</span> <span class="title">ProcessEvent</span><span class="params">(e events.Event)</span> <span class="title">events</span>.<span class="title">Event</span></span> &#123;</div><div class="line">	...</div><div class="line">	</div><div class="line">	<span class="keyword">case</span> *pbftMessage:</div><div class="line">		<span class="keyword">return</span> pbftMessageEvent(*et)</div><div class="line">	<span class="keyword">case</span> pbftMessageEvent:</div><div class="line">		msg := et</div><div class="line">		logger.Debugf(<span class="string">"Replica %d received incoming message from %v"</span>, instance.id, msg.sender)</div><div class="line">		next, err := instance.recvMsg(msg.msg, msg.sender)</div><div class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</div><div class="line">			<span class="keyword">break</span></div><div class="line">		&#125;</div><div class="line">		<span class="keyword">return</span> next</div><div class="line">	<span class="keyword">case</span> *RequestBatch:</div><div class="line">		err = instance.recvRequestBatch(et)</div><div class="line">	<span class="keyword">case</span> *PrePrepare:</div><div class="line">		err = instance.recvPrePrepare(et)</div><div class="line">		</div><div class="line">	...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>可以看到<code>*pbftMessage</code>和<code>pbftMessageEvent</code>这两个<code>case</code>通过<code>recvMsg</code>的返回值又把消息分发给其余<code>case</code>，非常巧妙。</p>
-<p><code>PBFT</code>算法的不同阶段都会按着上面的流程映射到不同的处理函数往前推进，本质上是一个状态机。</p>
-<p>至此Fabric的<code>Consensus</code>模块主要流程已经梳理清楚，熟悉了这个流程以后再结合<code>PBFT</code>算法的过程就可以很容易在此基础上添加新的功能了。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      联盟链Hyperledger fabric共识模块源码分析
-    
-    </summary>
-    
-      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="Fabric" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/Fabric/"/>
-    
-    
-      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="Fabric" scheme="qyuan.top/tags/Fabric/"/>
     
   </entry>
   
