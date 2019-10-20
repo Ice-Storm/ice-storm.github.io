@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-20T12:59:25.363Z</updated>
+  <updated>2019-10-20T13:32:41.638Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,14 +20,14 @@
     <link href="qyuan.top/2019/10/20/block/"/>
     <id>qyuan.top/2019/10/20/block/</id>
     <published>2019-10-20T12:56:12.000Z</published>
-    <updated>2019-10-20T12:59:25.363Z</updated>
+    <updated>2019-10-20T13:32:41.638Z</updated>
     
     <content type="html"><![CDATA[<p>区块就是交易的集合，公链链或者联盟链将交易打包成区块以后会进行持久化存储。</p>
 <a id="more"></a>
 <p>看一下经典的以太坊区块结构。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/block/1.png?raw=true" width="85%" height="50%"></p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/block/1.png?raw=true" width="100%" height="50%"></p>
 <p>从上图可以看到，区块由两部分组成，分别是区块头（header）和区块体（body）两部分。</p>
-<h3 id="区块头（header）"><a href="#区块头（header）" class="headerlink" title="区块头（header）"></a>区块头（header）</h3><p>区块头存储了区块的元信息，用来对区块内容进行一些标识校验说明等。我们将区块头里字段分为两部分，第一部分是一般而言是在联盟链场景需要的，另一部分是公链场景需要的。</p>
+<h3 id="区块头（header）"><a href="#区块头（header）" class="headerlink" title="区块头（header）"></a>区块头（header）</h3><p>区块头存储了区块的元信息，用来对区块内容进行一些标识，校验，说明等。区块头里字段分为两部分区块头和区块体。</p>
 <h5 id="通用字段"><a href="#通用字段" class="headerlink" title="通用字段"></a>通用字段</h5><ul>
 <li>ParentHash： 父区块的哈希值。</li>
 <li>Root：世界状态的哈希，stateDB的RLP编码后的哈希值。</li>
