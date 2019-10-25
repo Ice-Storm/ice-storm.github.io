@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-20T13:32:41.638Z</updated>
+  <updated>2019-10-25T06:18:51.999Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -14,6 +14,54 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>P2P网络核心技术之Gossip协议</title>
+    <link href="qyuan.top/2019/10/25/gossip/"/>
+    <id>qyuan.top/2019/10/25/gossip/</id>
+    <published>2019-10-25T13:16:07.000Z</published>
+    <updated>2019-10-25T06:18:51.999Z</updated>
+    
+    <content type="html"><![CDATA[<p>在Hyperledger Fabric中，节点间同步数据采用的是<code>Gossip</code>协议，当节点因为异常缺少账本数据时，可以通过<code>Gossip</code>协议从邻近的节点获得账本数据，保证集群中节点账本的一致性。</p>
+<a id="more"></a>
+<h3 id="Gossip协议"><a href="#Gossip协议" class="headerlink" title="Gossip协议"></a>Gossip协议</h3><p>Gossip是流言的意思，很好的诠释了协议的内容，协议传输数据也是采用了类似流言传播的方式在集群中扩散。</p>
+<p>Gossip 是一种去中心化思路的分布式协议，解决状态在集群中的数据传播和状态一致性的问题。</p>
+<h5 id="协议流程"><a href="#协议流程" class="headerlink" title="协议流程"></a>协议流程</h5><ul>
+<li>节点A周期性的选择相邻的k个节点，并且向这K个节点发送自身存储的数据；</li>
+<li>K个节点接收到A发送过来的数据后，发现自身没有则存储下来，如果有则丢掉，并且重复节点A的过程。</li>
+</ul>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/gossip/1.gif?raw=true" width="90%" height="50%"></p>
+<p>在节点A向节点K发送数据的时候有三种方式；</p>
+<ul>
+<li><code>push</code>模式，节点A将数据（key，version，value）推送给K，K更新version比自己新的数据。</li>
+<li><code>pull</code>模式，节点A将数据（key，version）推送给K，K将本地version比A新的数据推送给A。</li>
+<li><code>push/pull</code>模式，先采用push模式更新K，然后采用pull模式更新A。</li>
+</ul>
+<p>push模式需要通信一次，pull模式需要两次，pull/push模式需要通信三次，而从最终一致性的收敛速度也与通信次数成正比。将消息传播到所有节点的时间复杂度为log(n)。  </p>
+<h5 id="Gossip缺陷"><a href="#Gossip缺陷" class="headerlink" title="Gossip缺陷"></a>Gossip缺陷</h5><ul>
+<li><p>消息的延迟，由于 Gossip 协议中，节点只会随机向少数几个节点发送消息，消息最终是通过多个轮次的散播而到达全网的，因此使用 Gossip 协议会造成不可避免的消息延迟。不适合用在对实时性要求较高的场景。</p>
+</li>
+<li><p>消息冗余，Gossip 协议规定，节点会定期随机选择周围节点发送消息，而收到消息的节点也会重复该步骤，因此就不可避免的存在消息重复发送给同一节点的情况，造成了消息的冗余，同时也增加了收到消息的节点的处理压力。而且，由于是定期发送，因此，即使收到了消息的节点还会反复收到重复消息，加重了消息的冗余。</p>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      gossip网络协议
+    
+    </summary>
+    
+      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="P2P网络" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/P2P%E7%BD%91%E7%BB%9C/"/>
+    
+    
+      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="以太坊" scheme="qyuan.top/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
+    
+  </entry>
   
   <entry>
     <title>以太坊区块结构</title>
@@ -1187,93 +1235,6 @@
     
     
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kademlia算法原理详解</title>
-    <link href="qyuan.top/2018/08/28/kad/"/>
-    <id>qyuan.top/2018/08/28/kad/</id>
-    <published>2018-08-28T14:22:44.000Z</published>
-    <updated>2019-07-14T12:40:25.615Z</updated>
-    
-    <content type="html"><![CDATA[<p>P2P网络有四个发展阶段：<code>集中式网络</code>，<code>纯分布式网络</code>，<code>混合式网络</code>，<code>结构化网络</code>。</p>
-<a id="more"></a>
-<h3 id="集中式网络"><a href="#集中式网络" class="headerlink" title="集中式网络"></a><code>集中式网络</code></h3><p><code>集中式</code>的P2P网络最简单，即一个节点保存了其他所有节点的索引信息，而索引信息又包括了节点IP，端口，节点资源等。节点之间互连的路由查询由中心节点完成，一旦和对等节点建立连接则与中心节点没有什么联系。集中式的P2P网络结构简单，实现容易，但是由于所有路由信息在中心节点存储，当节点数量变多扩展的时候容易出现性能瓶颈，也容易出现单点故障。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/kad/1.jpg?raw=true" width="70%" height="70%"></p>
-<h3 id="纯分布式网络"><a href="#纯分布式网络" class="headerlink" title="纯分布式网络"></a><code>纯分布式网络</code></h3><p><code>纯分布式</code>的P2P网络移除了中心节点，在P2P网络之间建立了随机网络，一个新加入的节点和P2P网络中的某个随机节点建立连接，从而形成一个随机的拓扑结构。新节点和邻居节点建立连接以后还需要全网广播，让整个网络知道自己的存在。</p>
-<p>全网广播的方式是，该节点向自己的邻居节点广播，邻居节点收到消息以后在向自己的邻居节点广播，以此类推，从而广播到整个网络。这种广播也称为泛洪机制。</p>
-<p>纯分布式的P2P网络不存在集中式网络的单点故障和中心性能瓶颈的问题，具有较好的扩展性，但是泛洪机制又引入了新的问题，一是容易形成泛洪循环，A节点发出的消息经过节点B到节点C，节点C在<br>广播到节点A，形成了一个消息循环；另一个是响应消息风暴的问题，如果节点A想请求的资源被很多节点所拥有，那么在短时间内就会出现大量的节点向A节点发送响应消息，可能会让节点A崩溃。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/kad/2.jpg?raw=true" width="70%" height="70%"></p>
-<h3 id="混合式网络"><a href="#混合式网络" class="headerlink" title="混合式网络"></a><code>混合式网络</code></h3><p><code>混合式</code>的P2P网络就是混合了<code>集中式</code>和<code>纯分布式</code>的结构，网络中存在多个超级节点组成分布式网络，而每个超级节点则与多个普通节点组成局部的集中式网络。一个新的普通节点加入网络需要先选择一个超级节点通信，该超级节点在推送其他超级节点列表给新加入的节点，加入节点在根据超级节点列表中的状态选择加入哪个超级节点作为父节点。这种结构限制了泛洪广播的范围，避免了大规模的泛洪问题。<br>在实际应用中，<code>混合式</code>结构是相对灵活且比较有效的网络架构，实现也相对容易。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/kad/3.jpg?raw=true" width="70%" height="70%"></p>
-<h3 id="结构化网络"><a href="#结构化网络" class="headerlink" title="结构化网络"></a><code>结构化网络</code></h3><p><code>结构化P2P网络</code>也是一种分布式网络结构，但又与<code>纯分布式</code>有所区别。<code>纯分布式</code>网络就是一个随机网络，而结构化网络则将所有节点按照某种结构有序的组织起来，比如形成一个环状网络或者树状的网络。<br>结构化网络的具体实现上普遍都是基于DHT(Distributed Hash Table，分布式哈希表) 算法。具体的实现方案有 Chord、Pastry、CAN、Kademlia 等算法，其中 Kademlia 也是以太坊网络的实现算法，后面中重点讲解它的实现原理。</p>
-<h2 id="Kad算法原理"><a href="#Kad算法原理" class="headerlink" title="Kad算法原理"></a><code>Kad</code>算法原理</h2><p><code>Kad</code>算法用来在分布式环境中准确的路由，定位数据。</p>
-<p>在Kad网络中每个节点都有一个随机产生的160bit的标识符作为节点ID，Kad算法通过计算节点ID间的距离来快速路由和定位资源。</p>
-<p>Kad算法通过异或节点ID来计算节点之间的距离，这个距离是逻辑上的距离并不是节点间物理上的距离。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">节点A的ID（010）</div><div class="line">节点B的ID（110）</div><div class="line">A ⊕ B = 100（二进制） = 4（十进制）</div></pre></td></tr></table></figure>
-<p>在上面异或度量节点距离的基础之上，Kad算法还可以将整个网络划分成一个二叉前缀树，每个节点映射到二叉树上的某个叶子。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/kad/kbucket.png?raw=true" width="80%" height="80%"></p>
-<p>映射规则：</p>
-<ul>
-<li>将节点ID（160bit）从高到低依次分层，第N位就对应了第N层</li>
-<li>如果是0进入左子树，如果是1则进入右子树</li>
-<li>每个节点就对应树中的一个叶子</li>
-</ul>
-<p>在这种二叉树结构下，对于每个节点来说离他它越近的值节点的异或距离也越近，每一个节点都可以从自己的视角来对二叉树进行拆分，拆分规则是从根节点开始，把不包含自己的子树拆分出来，然后在剩下的子树再拆分不包含自己的下一层子树，以此类推，直到最后只剩下自己。上图的例子就是以节点ID为110的视角多二叉树进行了拆分。</p>
-<p>因为Kad算法默认的节点ID是160bit，所有拆分以后最多可以有160课子树，而对于每个子树，如果我们分别知道里面的一个节点，就可以利用这个节点递归路由到子树的任意一个节点。</p>
-<p>但是在实际应用中，由于节点是动态增加减少的，如果知道的节点恰好宕机或者下线了就会出现问题，为了保证系统的鲁棒性Kad算法又引入了K桶（K-bucket）的机制。</p>
-<h3 id="K桶（k-bucket）"><a href="#K桶（k-bucket）" class="headerlink" title="K桶（k-bucket）"></a>K桶（<code>k-bucket</code>）</h3><p>节点在完成拆分子树以后需要记录每个子树里面K个节点，K可以由用户自己定义，在BT下载使用的Kad算法中K是8。</p>
-<p><code>K-bucket</code>实际上就是路由表，每个节点按照自己的视角拆分完子树以后可以得到N个子树，那就需要维护N个路由表，对应N个K-bucket.</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/kad/k_bucket.png?raw=true" width="80%" height="80%"></p>
-<p>每个节点维护N个K-bucket以后还会出现一个问题，K-bucket中的节点也会动态的增减，那又如何K-bucket的稳定呢？</p>
-<h3 id="K桶的更新机制"><a href="#K桶的更新机制" class="headerlink" title="K桶的更新机制"></a>K桶的更新机制</h3><p><code>K-bucket</code>主要有三种方式来更新路由表。</p>
-<ul>
-<li>主动收集节点，主动发起FIND_NODE查询节点的请求，从而更新K桶的节点信息。</li>
-<li>被动收集节点，当收到其他节点发送过来的请求（如：FIND_NODE、FIND_VALUE），会把对方的节点ID加入到某个K桶中。</li>
-<li>检测失效节点，周期性的发起PING请求，判断K桶中某个节点是否在线，然后清理K桶中哪些下线的节点。</li>
-</ul>
-<p>当一个节点ID被用来更新K桶的时候进行如下步骤：</p>
-<ul>
-<li>计算自己和目标节点ID的距离d</li>
-<li>通过距离d找到对应的K桶，如果ID已经在K桶中了则把对应项移到K桶的末尾</li>
-<li><p>如果不在K桶中则有两种情况</p>
-<p>  1.如果该K桶存储的节点小于K个，则直接把目标节点插入到K-桶尾部；<br>  2.如果该K桶存储节点大于等于K个，则选择K-桶中的头部节点进行PING操作，检测节点是否存活。如果头部节点没有响应，则移除该头部节点，并将目标节点插入到队列尾部；如果头部节点有响应，则把头部节点移到队列尾部，同时忽略目标节点。</p>
-</li>
-</ul>
-<p>通过这种更新策略可以保证在线时间长的节点有较大的可能继续保存在K桶中，提高了稳定网络构建路由表的成本。</p>
-<h3 id="加入Kad网络"><a href="#加入Kad网络" class="headerlink" title="加入Kad网络"></a>加入<code>Kad</code>网络</h3><p>一个新节点需要加入Kad网络有如下的步骤</p>
-<ul>
-<li>新节点A需要一个种子节点B作为引导，并把该种子节点加入到K桶中。</li>
-<li>生成一个随机的节点ID，直到离开网络一直使用。</li>
-<li>向节点B发送FIND_NODE请求。</li>
-<li>节点B在收到节点A的FIND_NODE请求后，会根据FIND_NODE请求的约定，找到K个距离A最近的节点，并返回给A节点</li>
-<li>A收到这些节点以后，就把它们加入到自己的K桶中</li>
-<li>然后节点A会继续向这些刚拿到节点发起FIND_NODE请求，如此往复，直到A建立了足够详细的路由表。</li>
-</ul>
-<h3 id="定位节点"><a href="#定位节点" class="headerlink" title="定位节点"></a>定位节点</h3><p>节点查询可以同步进行也可以异步进行，同时查询并发一般为3。</p>
-<ul>
-<li>确定目标ID对应路由表中的K桶位置，然后从自己的K-桶中筛选出K个距离目标ID最近的节点，并同时向这些节点发起FIND_NODE的查询请求。</li>
-<li>被查询节点收到FIND_NODE请求后，从对应的K桶中找出自己所知道的最近的K个节点，并返回给发起者。</li>
-<li>发起者在收到这些节点后，更新自己的结果列表，并再次从其中K个距离目标节点ID最近的节点，挑选未发送请求的节点重复第一步</li>
-<li>不断重复上面的步骤直到找到目标节点为止</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      P2P网络的演化，Kademlia算法的原理
-    
-    </summary>
-    
-      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="P2P网络" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/P2P%E7%BD%91%E7%BB%9C/"/>
-    
-    
-      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="P2P网络" scheme="qyuan.top/tags/P2P%E7%BD%91%E7%BB%9C/"/>
     
   </entry>
   

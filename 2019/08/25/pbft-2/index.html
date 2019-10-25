@@ -27,7 +27,7 @@
 <li>如果集合<code>P</code>不为空，广播<code>&lt;PRE-PREPARE, v+1, n,d&gt;</code></li>
 </ul>
 <p>&emsp;&emsp;总结一下，在<code>view-change</code>中最为重要的就是<code>C</code>，<code>P</code>，<code>Q</code>三个消息的集合，<code>C</code>确保了视图变更的时候，<code>stable checkpoint</code>之前的状态安全。<code>P</code>确保了视图变更前，已经<code>PREPARE</code>的消息的安全。<code>Q</code>确保了视图变更后<code>P</code>集合中的消息安全。回想一下<code>pre-prepare</code>和<code>prepare</code>阶段最重要的任务是保证，同一个<code>主节点</code>发出的请求在同一个<code>视图（view）</code>中的顺序是一致的，而在视图切换过程中的<code>C</code>，<code>P</code>，<code>Q</code>三个集合就是解决这个问题的。</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2019/09/03/pbft-3/" class="prev">上一篇</a><a href="/2019/08/13/pbft-1/" class="next">下一篇</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+</div></article></div></main><footer><div class="paginator"><a href="/2019/09/03/pbft-3/" class="prev">PREV</a><a href="/2019/08/13/pbft-1/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
     clientID: '0dc72a011c85518eff6a',
     clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
     repo: 'ice-storm.github.io',
