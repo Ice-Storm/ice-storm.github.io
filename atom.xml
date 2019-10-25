@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-25T06:18:51.999Z</updated>
+  <updated>2019-10-25T06:27:57.467Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="qyuan.top/2019/10/25/gossip/"/>
     <id>qyuan.top/2019/10/25/gossip/</id>
     <published>2019-10-25T13:16:07.000Z</published>
-    <updated>2019-10-25T06:18:51.999Z</updated>
+    <updated>2019-10-25T06:27:57.467Z</updated>
     
     <content type="html"><![CDATA[<p>在Hyperledger Fabric中，节点间同步数据采用的是<code>Gossip</code>协议，当节点因为异常缺少账本数据时，可以通过<code>Gossip</code>协议从邻近的节点获得账本数据，保证集群中节点账本的一致性。</p>
 <a id="more"></a>
-<h3 id="Gossip协议"><a href="#Gossip协议" class="headerlink" title="Gossip协议"></a>Gossip协议</h3><p>Gossip是流言的意思，很好的诠释了协议的内容，协议传输数据也是采用了类似流言传播的方式在集群中扩散。</p>
-<p>Gossip 是一种去中心化思路的分布式协议，解决状态在集群中的数据传播和状态一致性的问题。</p>
+<h3 id="Gossip协议"><a href="#Gossip协议" class="headerlink" title="Gossip协议"></a>Gossip协议</h3><p>Gossip是流言的意思，很好的诠释了协议的过程，协议传输数据也是采用了类似流言传播的方式在集群中扩散。</p>
+<p>Gossip是一种去中心化思路的分布式协议，解决集群中的数据传播和状态一致性的问题。</p>
 <h5 id="协议流程"><a href="#协议流程" class="headerlink" title="协议流程"></a>协议流程</h5><ul>
 <li>节点A周期性的选择相邻的k个节点，并且向这K个节点发送自身存储的数据；</li>
 <li>K个节点接收到A发送过来的数据后，发现自身没有则存储下来，如果有则丢掉，并且重复节点A的过程。</li>
