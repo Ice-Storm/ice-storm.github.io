@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-27T11:12:02.402Z</updated>
+  <updated>2019-10-27T11:13:58.704Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,12 +20,12 @@
     <link href="qyuan.top/2019/10/27/mpt-3/"/>
     <id>qyuan.top/2019/10/27/mpt-3/</id>
     <published>2019-10-27T11:09:31.000Z</published>
-    <updated>2019-10-27T11:12:02.402Z</updated>
+    <updated>2019-10-27T11:13:58.704Z</updated>
     
     <content type="html"><![CDATA[<p>以太坊区块中有三颗MPT树，分别是状态树，交易树，收据树 ，分别存储了以太坊中的世界状态，本区块的交易，本区块的交易回执，其中交易和交易回执是一一对应的。</p>
 <a id="more"></a>
 <h3 id="状态树"><a href="#状态树" class="headerlink" title="状态树"></a>状态树</h3><p>每次生成一个新的区块，以太坊状态发生改变后并不会去修改原来的MPT树，而是会新建一些分支，如下图所示；</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/mpt3/1.png?raw=true" width="90%" height="50%"></p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/mpt3/1.png?raw=true" width="110%" height="50%"></p>
 <h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><ul>
 <li>当一个账户的余额发生改变后，对应路径的哈希也发生了变化，然后自底而上的更新对应路径上的哈希值，直至Satet Root，这样可以计算最少的哈希次数。</li>
 <li>以太坊中的全节点维护的是增量的MPT状态树，因为每次一个区块对世界状态的修改都只是很小的一部分，增量修改既有利于区块回滚，又可以节约开销。</li>
