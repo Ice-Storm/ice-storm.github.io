@@ -40,7 +40,7 @@
 </ul>
 <p>通过以太坊黄皮书中很经典的一张图，来了解不同节点的具体结构和作用</p>
 <p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/mpt/4.png?raw=true" width="80%" height="80%"></p>
-<p>可以看到有四个状态要存储在世界状态的MPT树中，需要存入的值是键值对的形式。自顶向下，我们首先看到的<code>keccak256</code>生成的根哈希，参考默克尔树的<code>Top Hash</code>，其次看到的是绿色的<code>扩展节点Extension Node</code>，其中<code>共同前缀shared nibble</code>是a7，采用了压缩前缀树的方式进行了合并，接着看到蓝色的<code>分支节点Branch Node</code>，其中有表示十六进制的字符和一个value，最后的value是fullnode的数据部分，最后看到紫色的<code>叶子节点leadfNode</code>用来存储具体的数据，它也是对路径进行了压缩。</p>
+<p>可以看到有四个状态要存储在世界状态的MPT树中，需要存入的值是键值对的形式。自顶向下，我们首先看到的<code>keccak256</code>生成的根哈希，参考默克尔树的<code>Top Hash</code>，其次看到的是绿色的<code>扩展节点Extension Node</code>，其中<code>共同前缀shared nibble</code>是a7，采用了压缩前缀树的方式进行了合并，接着看到蓝色的<code>分支节点Branch Node</code>，其中有表示十六进制的字符和一个value，最后的value是fullnode的数据部分，最后看到紫色的<code>叶子节点leadfNode</code>用来存储具体的数据，它也对路径进行了压缩。</p>
 <p>在智能合约执行以后，有一部分数据是需要持久化，参考<a href="http://qyuan.top/2019/09/12/evm/">「EVM深度分析之数据存储(一)」</a>中的<code>Storage</code>中的类型，而一条链上有非常多的合约，每个合约又有很多的数据需要持久化，这个时候就需要用到<code>MPT</code>树。</p>
 <blockquote>
 <p>在「EVM深度分析之数据存储」中可以看到需要持久化的数据都是以键值对的形式存在的，而键是由keccak256这个函数计算得到，用十六进制表示后刚好对应 MPT 树中分支节点的0-f的16个分支。</p>

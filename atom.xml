@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-25T06:27:57.467Z</updated>
+  <updated>2019-10-27T11:12:02.402Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Merkle Patricia Tree (MPT) 树详解之实际应用（三）</title>
+    <link href="qyuan.top/2019/10/27/mpt-3/"/>
+    <id>qyuan.top/2019/10/27/mpt-3/</id>
+    <published>2019-10-27T11:09:31.000Z</published>
+    <updated>2019-10-27T11:12:02.402Z</updated>
+    
+    <content type="html"><![CDATA[<p>以太坊区块中有三颗MPT树，分别是状态树，交易树，收据树 ，分别存储了以太坊中的世界状态，本区块的交易，本区块的交易回执，其中交易和交易回执是一一对应的。</p>
+<a id="more"></a>
+<h3 id="状态树"><a href="#状态树" class="headerlink" title="状态树"></a>状态树</h3><p>每次生成一个新的区块，以太坊状态发生改变后并不会去修改原来的MPT树，而是会新建一些分支，如下图所示；</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/mpt3/1.png?raw=true" width="90%" height="50%"></p>
+<h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><ul>
+<li>当一个账户的余额发生改变后，对应路径的哈希也发生了变化，然后自底而上的更新对应路径上的哈希值，直至Satet Root，这样可以计算最少的哈希次数。</li>
+<li>以太坊中的全节点维护的是增量的MPT状态树，因为每次一个区块对世界状态的修改都只是很小的一部分，增量修改既有利于区块回滚，又可以节约开销。</li>
+<li>在以太坊中区块临时分叉很普遍，但是由于以太坊智能合约的复杂性，如果不记录原始状态，很难根据合约代码回滚状态。</li>
+</ul>
+<h3 id="收据树"><a href="#收据树" class="headerlink" title="收据树"></a>收据树</h3><p>以太坊在智能合约执行时会产生一个交易回执（Receipt）记录了此笔交易的执行结果，交易信息和区块信息。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/mpt3/2.png?raw=true" width="90%" height="50%"></p>
+<p>当查询轻节点查询通过布隆过滤器找到交易后，为了避免误识，还会再次查询回执来避免误识。</p>
+<h3 id="交易树"><a href="#交易树" class="headerlink" title="交易树"></a>交易树</h3><p>交易树的作用是提供了交易的默克尔证明，证明某个交易被打包到某个区块里，轻节点不用存储区块体仅根据提供的默克尔证明就可以快速判断交易是否已经被打包。</p>
+<h3 id="三颗树的差异"><a href="#三颗树的差异" class="headerlink" title="三颗树的差异"></a>三颗树的差异</h3><p>交易树和收据树只依赖当前的区块，而状态树是把链上所有状态都包含进去，交易树和收据树是独立的，状态树会共享树的节点。</p>
+<p>为什么状态树要包含所有链上所有的状态呢？</p>
+<p>举个例子，当一笔转账操作的发起时，需要判断发起账户是否有足够的ETH来完成这笔转账，这个时候要通过查找状态树查看对应账户的状态，但是如果为了节约空间，只保存了当前区块账户的状态，就需要逐块查找，非常影响性能，甚至这个转账交易的发起者都不存在，是一个恶意操作。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      以太坊Merkle Patricia Tree（MPT）树详解，如何数据持久化，如何存储。
+    
+    </summary>
+    
+      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="存储" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AD%98%E5%82%A8/"/>
+    
+    
+      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="存储" scheme="qyuan.top/tags/%E5%AD%98%E5%82%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>P2P网络核心技术之Gossip协议</title>
@@ -207,7 +249,7 @@
     <link href="qyuan.top/2019/10/08/mpt/"/>
     <id>qyuan.top/2019/10/08/mpt/</id>
     <published>2019-10-08T13:55:30.000Z</published>
-    <updated>2019-10-12T04:07:21.009Z</updated>
+    <updated>2019-10-25T08:13:45.438Z</updated>
     
     <content type="html"><![CDATA[<p>在之前的EVM系列的文章中，其实一直有一个问题没有解决，那就是Storage持久化的数据最终是以什么样的形式，保存在哪里？数以万计的合约有数以万计的storage变量，这些变量如何快速的读写？</p>
 <a id="more"></a>
@@ -251,7 +293,7 @@
 </ul>
 <p>通过以太坊黄皮书中很经典的一张图，来了解不同节点的具体结构和作用</p>
 <p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/mpt/4.png?raw=true" width="80%" height="80%"></p>
-<p>可以看到有四个状态要存储在世界状态的MPT树中，需要存入的值是键值对的形式。自顶向下，我们首先看到的<code>keccak256</code>生成的根哈希，参考默克尔树的<code>Top Hash</code>，其次看到的是绿色的<code>扩展节点Extension Node</code>，其中<code>共同前缀shared nibble</code>是a7，采用了压缩前缀树的方式进行了合并，接着看到蓝色的<code>分支节点Branch Node</code>，其中有表示十六进制的字符和一个value，最后的value是fullnode的数据部分，最后看到紫色的<code>叶子节点leadfNode</code>用来存储具体的数据，它也是对路径进行了压缩。</p>
+<p>可以看到有四个状态要存储在世界状态的MPT树中，需要存入的值是键值对的形式。自顶向下，我们首先看到的<code>keccak256</code>生成的根哈希，参考默克尔树的<code>Top Hash</code>，其次看到的是绿色的<code>扩展节点Extension Node</code>，其中<code>共同前缀shared nibble</code>是a7，采用了压缩前缀树的方式进行了合并，接着看到蓝色的<code>分支节点Branch Node</code>，其中有表示十六进制的字符和一个value，最后的value是fullnode的数据部分，最后看到紫色的<code>叶子节点leadfNode</code>用来存储具体的数据，它也对路径进行了压缩。</p>
 <p>在智能合约执行以后，有一部分数据是需要持久化，参考<a href="http://qyuan.top/2019/09/12/evm/">「EVM深度分析之数据存储(一)」</a>中的<code>Storage</code>中的类型，而一条链上有非常多的合约，每个合约又有很多的数据需要持久化，这个时候就需要用到<code>MPT</code>树。</p>
 <blockquote>
 <p>在「EVM深度分析之数据存储」中可以看到需要持久化的数据都是以键值对的形式存在的，而键是由keccak256这个函数计算得到，用十六进制表示后刚好对应 MPT 树中分支节点的0-f的16个分支。</p>
@@ -1166,72 +1208,6 @@
       <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
       <category term="数据结构" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
-    
-    
-      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>深入理解`BucketTree`</title>
-    <link href="qyuan.top/2019/04/18/BucketTree/"/>
-    <id>qyuan.top/2019/04/18/BucketTree/</id>
-    <published>2019-04-18T12:16:32.000Z</published>
-    <updated>2019-04-18T12:42:46.707Z</updated>
-    
-    <content type="html"><![CDATA[<p>&emsp;&emsp;Bucket Tree结合了默克尔树和哈希表的特点，如果想要深入了解Bucket Tree就必须掌握默克尔树和哈希表。</p>
-<p>&emsp;&emsp;Merkle Tree大多用来进行对比验证处理，特别是在分布式环境下进行比对或验证的时候可以大大减少数据传输量和计算的复杂度。</p>
-<a id="more"></a>
-<h3 id="默克尔树结构解析"><a href="#默克尔树结构解析" class="headerlink" title="默克尔树结构解析"></a><code>默克尔树结构解析</code></h3><h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><ul>
-<li>默克尔树是一种树，一般是二叉树，也可以是多叉树；</li>
-<li>默克尔树的叶子节点可以是数据项，也可以是数据项的哈希值；</li>
-<li>非叶子节点的数据项是由其叶子节点Hash计算得到的；</li>
-</ul>
-<h4 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h4><p>&emsp;&emsp;默克尔树是自底向上构建的，下面就是一颗典型的默克尔树。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bucketTree/1.jpg?raw=true" alt="Alt text"></p>
-<p>&emsp;&emsp;首先计算ENTRY1-ENTRY4单元的数据哈希，然后分别存入到对应的叶子节点，这些叶子节点分别是HASH0-0,HASH0-1,HASH1-0,HASH1-1。<br>接着将相邻节点的哈希值合并成一个字符串，然后计算这个字符串的哈希值，得到的就是这两个节点父节点的哈希值。</p>
-<p>&emsp;&emsp;如果用公式表示的话就是这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HASH 0 = Hash（HASH 0-0 + HASH 0-1）、</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;如果树节点的个数是单数，就对它直接进行哈希运算，或者复制一次这个节点的哈希值，凑齐偶数个节点。</p>
-<p>&emsp;&emsp;重复上述过程，自底向上就可以构建整个默克尔树了。</p>
-<h5 id="Tips"><a href="#Tips" class="headerlink" title="Tips:"></a>Tips:</h5><ul>
-<li>若两颗树的根哈希一直，则这两棵树的结构，节点内容必然相同。</li>
-</ul>
-<h4 id="默克尔树的优势"><a href="#默克尔树的优势" class="headerlink" title="默克尔树的优势"></a>默克尔树的优势</h4><p>&emsp;&emsp;当一个节点内容发生变化的时候，仅需要计算从该节点到根路径上所有节点节点的哈希，减少计算量，同时也方便快速定位数据发生变化的位置。</p>
-<h3 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a><code>哈希表</code></h3><p>&emsp;&emsp;哈希表也称散列表，根据键（key）快速定位值（value）的存储位置的数据结构。</p>
-<h3 id="Bucket-Tree"><a href="#Bucket-Tree" class="headerlink" title="Bucket Tree"></a><code>Bucket Tree</code></h3><p>&emsp;&emsp;Bucket Tree拓展了哈希表的概念，引入了一个桶（bucket），也就是哈希桶。<br>&emsp;&emsp;其结构如下图所示:</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bucketTree/2.jpg?raw=true" alt="Alt text"></p>
-<p>&emsp;&emsp;KEY2和KEY3映射到相同的152号桶里。￼</p>
-<p>&emsp;&emsp;Bucket tree在扩展哈希表的同时，又在哈希表上建立了默克尔树。</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bucketTree/3.jpg?raw=true" alt="Alt text"></p>
-<p>&emsp;&emsp;哈希表由一系列的哈希桶（bucket）组成，每个桶中存储着若干被散列到该桶中的数据项（entry）所以数据项按序排列，每一个哈希桶有一个哈希值来标识整个桶，该哈希值是桶内所有数据通过哈希计算所得。</p>
-<p>&emsp;&emsp;除了底层的哈希表外，上层是一系列的默克尔树节点，一个默克尔树节点对应着下层的N个哈希桶或者默克尔树节点，这个N也称作默克尔树的聚合度。</p>
-<h4 id="如此设计的目的："><a href="#如此设计的目的：" class="headerlink" title="如此设计的目的："></a>如此设计的目的：</h4><ul>
-<li>​利用默克尔树的特点，使每次树状态改变，重新计算哈希的代价最小；</li>
-<li>利用哈希表进行底层数据的维护，使得数据项均匀分布；</li>
-</ul>
-<p>&emsp;&emsp;例如上图中，一条新的数据项entry5插入，该数据项被散列到POS为1的桶中。该桶，即从该桶至根节点上所有的节点被标为粉红色，即为脏节点。仅对这些脏节点进行哈希重计算，便可得到一个新的哈希值用来代表新的树状态。</p>
-<p>&emsp;&emsp;由于bucket tree是一棵固定大小的树（即底层的哈希表容量在树初始化之后，就无法更改了），随着数据量的增大，采用散列函数将所有的数据项进行均匀散列可以避免数据聚集的情况发生。</p>
-<h4 id="Bucket-tree有两个重要的可调参数："><a href="#Bucket-tree有两个重要的可调参数：" class="headerlink" title="Bucket tree有两个重要的可调参数："></a>Bucket tree有两个重要的可调参数：</h4><ul>
-<li>​capacity：表示哈希表的容量，该值越大，整课树所能容纳的数据项个数就越多，在聚合程度不变的前提下，树越高，从叶子节点到根节点的路径越长，哈希计算次数也越多。</li>
-<li>aggreation：表示一个父节点对应的孩子节点的个数，该值越大，表示树的收敛速度越快，在哈希表容量不变的前提下，树更低，从叶子节点到根节点路径越短，哈希计算次数也越少。但是每个默克尔树节点的size就越大，增加磁盘IO开销。</li>
-</ul>
-<h5 id="Tips-1"><a href="#Tips-1" class="headerlink" title="Tips:"></a>Tips:</h5><ul>
-<li>​当有比较多数据变更的时候，非常容易散列到不同bucket，这个时候可以并行计算新bucket的哈希值，加速构建默克尔树。</li>
-<li>如果Bucket tree树比较大，并且用数据库来存储的话，加上读cache可以显著的提升性能。</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      Hyperledger Fabric区块链的世界状态组织形式
-    
-    </summary>
-    
-      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="账本" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E8%B4%A6%E6%9C%AC/"/>
-    
-      <category term="世界状态" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E8%B4%A6%E6%9C%AC/%E4%B8%96%E7%95%8C%E7%8A%B6%E6%80%81/"/>
     
     
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
