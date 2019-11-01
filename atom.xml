@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-10-25T06:27:57.467Z</updated>
+  <updated>2019-11-01T08:31:24.277Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -14,6 +14,48 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>默克尔证明</title>
+    <link href="qyuan.top/2019/11/01/merkle-proof/"/>
+    <id>qyuan.top/2019/11/01/merkle-proof/</id>
+    <published>2019-11-01T13:18:39.000Z</published>
+    <updated>2019-11-01T08:31:24.277Z</updated>
+    
+    <content type="html"><![CDATA[<p>假设有这样一种场景需要用到比特币支付，支付完成以后我需要向对方证明这笔交易已经写到区块中了，比较容易想到的办法就是拿到打包交易的对应区块，然后对比区块中的所有交易来确认是否已经被打包其中。</p>
+<a id="more"></a>
+<p>但是在比特币或者以太坊的场景下，一个区块大概有两三千笔交易，一个交易又包含若干字段，如果逐一比较交易不仅速度慢，而且不安全，因为拿单一的区块你无法知道拿到的块的真伪。</p>
+<p>而默克尔证明提供了一种仅需链中全量区块头信息就可以证明交易是否存在某一区块中的方法。</p>
+<blockquote>
+<p>全量保存区块头是为了保证安全性，而且区块头很小，非常适合在一些移动设备存储。</p>
+</blockquote>
+<h5 id="默克尔证明"><a href="#默克尔证明" class="headerlink" title="默克尔证明"></a>默克尔证明</h5><p>默克尔证明基于默克尔树。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/merkleproof/1.png?raw=true" width="100%" height="100%"></p>
+<p>如果我们知道了根哈希，也就是紫色的这个节点包含的值，需要证明红色的节点包含的<code>Peach</code>是否在这个集合中，仅需要提供绿色节点包含的值就可以。<br>我们可以计算出<code>Peach</code>的哈希值，然后依次与绿色节点包含的哈希值两两计算哈希，最终就可以得到根哈希，根哈希一致则证明<code>Peach</code>在这个区块中。</p>
+<h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><ul>
+<li>无需知道其他节点的值是什么就可以证明特定节点是否在集合中。</li>
+<li>仅存储默克尔证明消耗很小的空间。</li>
+<li>判断一笔交易是否在区块中的消耗很低。</li>
+</ul>
+<h5 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h5><p>轻节点只包含区块头，也就是只有交易树的根哈希值，当A需要向轻节点证明一笔交易已经打包到指定区块时，只需要提供这笔交易和对应路径上的哈希值即可，这样轻节点就可以在不保存区块体的情况下证明了这笔交易已经上链不可更改了。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      默克尔证明
+    
+    </summary>
+    
+      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="存储" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AD%98%E5%82%A8/"/>
+    
+    
+      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="存储" scheme="qyuan.top/tags/%E5%AD%98%E5%82%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>P2P网络核心技术之Gossip协议</title>
@@ -68,7 +110,7 @@
     <link href="qyuan.top/2019/10/20/block/"/>
     <id>qyuan.top/2019/10/20/block/</id>
     <published>2019-10-20T12:56:12.000Z</published>
-    <updated>2019-10-20T13:32:41.638Z</updated>
+    <updated>2019-11-01T07:56:16.135Z</updated>
     
     <content type="html"><![CDATA[<p>区块就是交易的集合，公链链或者联盟链将交易打包成区块以后会进行持久化存储。</p>
 <a id="more"></a>
@@ -92,6 +134,7 @@
 <li>GasUsed：当前区块所有交易使用的Gas之和。</li>
 <li>MixDigest: 挖矿得到的Pow算法证明的摘要，也就是挖矿的工作量证明。</li>
 <li>nonce：挖矿找到的满足条件的值。</li>
+<li>Uncle：叔块是和以太坊的共识算法相关。</li>
 </ul>
 <p>一般而言一个类以太坊的联盟链是需要上面介绍的通用字段的，但是也不绝对，还可能与选择的共识算法，隐私保护策略，设计偏好有关。</p>
 <h3 id="区块体（Body）"><a href="#区块体（Body）" class="headerlink" title="区块体（Body）"></a>区块体（Body）</h3><p>区块体包括这个区块打包的所有交易，在一些链的设计中，并不像以太坊区分header和body，而是整合在一起。</p>
@@ -1172,45 +1215,6 @@
       <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
       <category term="以太坊" scheme="qyuan.top/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>白话布隆过滤器（Bloom Filter）</title>
-    <link href="qyuan.top/2019/04/30/BloomFilter/"/>
-    <id>qyuan.top/2019/04/30/BloomFilter/</id>
-    <published>2019-04-30T14:46:08.000Z</published>
-    <updated>2019-04-30T14:49:56.001Z</updated>
-    
-    <content type="html"><![CDATA[<p>&emsp;&emsp;要判断一个元素是不是在一个集合里，比较容易想到的方法是用数组，链表这样的数据结构把元素保存起来，然后依次比较来确定。<br>&emsp;&emsp;但是随着集合的变大，上面的这种方法就面临几个问题，首先比较的速度随着数据量的增加而变慢，其次存储集合的空间也越来越大。<br>&emsp;&emsp;为了解决上面的问题，就引入了<code>布隆过滤器（Bloom Filter）</code></p>
-<a id="more"></a>
-<h3 id="布隆过滤器原理"><a href="#布隆过滤器原理" class="headerlink" title="布隆过滤器原理"></a>布隆过滤器原理</h3><p>&emsp;&emsp;布隆过滤器的原理就是当一个元素被加入到集合的时候，用<code>K</code>个<code>Hash</code>函数将元素映射到一个<code>位图</code>中的<code>K</code>个点，并且把这个点的值设置为<code>1</code>，在每次检索的时候我们看一下这个点是不是都是<code>1</code>就知道集合中有没有这个元素了。<br>&emsp;&emsp;这样说可能比较抽象，举个例子：</p>
-<p>&emsp;&emsp;我们假设<code>K</code>是<code>2</code>，有<code>Hash1</code>和<code>Hash2</code>两个哈希函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Hash1 = n%3</div><div class="line">Hash2 = n%8</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;然后我们创建一个名叫<code>bitMap</code>长度是<code>20</code>的<code>位图</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bitMap=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;这个时候，我们要将7，存入到这个集合中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">n = 7</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;分别用<code>Hash1</code>和<code>Hash2</code>计算<code>n</code>哈希后的值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Hash1  -&gt;  1</div><div class="line">Hash2  -&gt;  7</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;我们把<code>bitMap</code>对应的值置为1，从0开始<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bitMap=[0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;这样下次我们来查找<code>7</code>在不在这个集合的时候就可以用<code>Hash1</code>和<code>Hash2</code>计算完以后在<code>bitMap</code>集合中查找对应位置是否都是<code>1</code>，如果都是<code>1</code>则一定在集合中。</p>
-<p>&emsp;&emsp;如果再在集合中插入13<br>&emsp;&emsp;分别用<code>Hash1</code>和<code>Hash2</code>计算<code>n</code>哈希后的值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">n = 13</div><div class="line">Hash1  -&gt;  1</div><div class="line">Hash2  -&gt;  5</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;我们把<code>bitMap</code>对应的值置为1，从0开始<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bitMap=[0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]</div></pre></td></tr></table></figure></p>
-<p>&emsp;&emsp;这个时候我们发现<code>1</code>被映射到了两次，但是并不影响我们在集合<code>[7, 13]</code>中快速找到7或者13。</p>
-<p>&emsp;&emsp;但是当插入的数据量大幅提升的时候，甚至<code>bitMap</code>全部被置为<code>1</code>的时候问题就很严重了，误识率就非常高了，这个也是根据不同场景实现布隆过滤器所要考虑的问题。</p>
-<p>&emsp;&emsp;尽管有这样的问题，但是仍然不能掩盖布隆过滤器的<code>空间利用率</code>和<code>查询时间</code>远超其他算法，插入数据和查询数据的时间复杂度都是<code>O(k)</code></p>
-<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><p>&emsp;&emsp;比较典型的应用场景就是检查垃圾邮箱的地址，比如我建立了一个垃圾邮件的布隆过滤器，当新邮件到来的时候我要快速的判断这封邮件是不是垃圾邮件。<br>&emsp;&emsp;还可以用来判断一个URL是不是恶意链接等等。<br>&emsp;&emsp;以太坊大量的用到了布隆过滤器，用来定位查找日志等。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      深入理解布隆过滤器
-    
-    </summary>
-    
-      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="数据结构" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
-    
-    
-      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
     
   </entry>
   
