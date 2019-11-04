@@ -1,0 +1,44 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="6A32DaUP6x"><meta name="sogou_site_verification" content="MPOhwuqxBD"><title> UTXO模型和Account模型对比 · Qin Yuan's blog</title><meta name="description" content="UTXO模型和Account模型对比 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="qyuan.top/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">UTXO模型和Account模型对比</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Nov 4, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span><a href="/tags/区块链" class="post-title-link"><span style="margin-left:10px;color:blue">区块链</span></a></div></div><div class="post-content"><p>目前主流的区块链采用<code>UTXO（Unspent Transaction Output）</code>和<code>账户（Account）</code>模型来组织交易，其中比特币采用UTXO模型，以太坊采用Account模型。</p>
+<a id="more"></a>
+<h3 id="UTXO-模型"><a href="#UTXO-模型" class="headerlink" title="UTXO 模型"></a>UTXO 模型</h3><p>UTXO全名是Unspent Transaction Outputs，未花费交易输出，举个例子；</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/utxo_account/1.png?raw=true" width="100%" height="100%"></p>
+<p>假设A挖出了区块1，获得了10个BTC，这个时候在UTXO模型中，A的余额是10，同时A向B和C分别转账5个比特币，这两笔交易被打包到区块2中，这个时候UTXO模型中，B和C的余额分别是5，当查看区块4打包的交易以后，发现这时的UTXO模型中显示，G和C有2.5个BTC，H有5个BTC。</p>
+<h5 id="凑输入和找零"><a href="#凑输入和找零" class="headerlink" title="凑输入和找零"></a>凑输入和找零</h5><p>UTXO有个性质就是一个交易的输入必须是另一个交易的输出，这就导致了一个问题，在上图中，地址F如果只需要2.5个BTC怎么办？<br>F的来源只可能B，C但是无论我们怎么组合都无法满足H只需要2.5个BTC的需求。这个时候就需要将一次转账拆分成转向两个地址，其中地址C’还由C控制，这样就完成了一次找零。</p>
+<blockquote>
+<p>C’被称为找零地址。</p>
+</blockquote>
+<p>如果不设置找零地址，其中的差额将会被矿工当做手续费扣除。</p>
+<p>凑整的过程与找零刚好相反，地址H的输入就是一个凑整的过程。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><ul>
+<li>除了了BTC产生的交易外每一笔交易的输出都是另一笔交易输入；</li>
+<li>如果丢失私钥丧失账户的控制权后，UTXO会一直保存这个账户的余额，因为没有输出；</li>
+<li>随着比特币的碎片化和账户私钥的丢失，UTXO模型会越来越膨胀；</li>
+<li>验证一笔交易的余额是否足够需要向上追溯；</li>
+<li>通过UTXO模型可以一定程度上避免双花攻击；</li>
+<li>UTXO通过找零设置新地址增加了一定的隐私性，因为除了你本人是不知道哪个地址是找零地址，哪个是收款地址。</li>
+</ul>
+<h3 id="Account模型"><a href="#Account模型" class="headerlink" title="Account模型"></a>Account模型</h3><p>相比较UTXO模型Account模型更加符合我们的认知，类似传统的银行账户，以太坊采用账户模型主要是为了支持智能合约，对于智能合约来说需要一个相对稳定的身份。<br>举个例子，当我们签订一份合同，希望双方的身份很明确，但是在UTXO模型中，身份可以通过找零地址变更，当合同出现问题很难明确权责。</p>
+<p>以太坊作为智能合约操作平台，将账户划分为两类：外部账户（EOAs）和合约账户（contract account）</p>
+<h5 id="外部账户"><a href="#外部账户" class="headerlink" title="外部账户"></a>外部账户</h5><p>外部账户(external owned accouts)是由私钥创建，具有以下特点；</p>
+<ul>
+<li>拥有以太余额；</li>
+<li>能发送交易，包括转账和执行合约代码；</li>
+<li>被私钥控制；</li>
+<li>没有相关的可执行代码；</li>
+</ul>
+<h5 id="合约账户"><a href="#合约账户" class="headerlink" title="合约账户"></a>合约账户</h5><p>含有合约代码的账户， 被外部账户或者合约创建，合约在创建时被分配到一个账户地址， 用于存储合约代码以及合约部署或执行过程中产生的存储数据，其具有如下特点；</p>
+<ul>
+<li>不能发送交易；</li>
+<li>合约账户接收到外部账户发来的交易以后可以通过Message调用其他合约账户；</li>
+<li>合约账户存储了合约代码和合约状态；</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/11/01/merkle-proof/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+    clientID: '0dc72a011c85518eff6a',
+    clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
+    repo: 'ice-storm.github.io',
+    owner: 'ice-storm',
+    admin: ['ice-storm'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+})
+gitalk.render('gitalk-container')</script><div class="copyright"><div><h4>Friends</h4><a href="https://www.xuanzhangjiong.top/">TopJohn's Blog</a>&emsp;&emsp;<a href="https://dbarobin.com">Robin</a></div><p>© 2017 - 2019 <a href="qyuan.top">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
