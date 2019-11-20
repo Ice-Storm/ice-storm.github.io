@@ -35,7 +35,7 @@
 </ul>
 <p>&emsp;&emsp;每个<code>log entry</code>中，除了需要执行的命令之外还有领导者节点的任期号，用于处理异常情况；同时我们也可以看到，当日志被复制到大多数节点，即可向客户端返回成功的消息，一旦返回了结果，就必须保证系统在任何异常情况都不会发送回滚。<br>&emsp;&emsp;<code>Raft</code>通过第一个阶段的<code>commited</code>和第二个阶段的<code>apply</code>，保证了状态机的一致性。</p>
 <p>&emsp;&emsp;当然还有各种异常情况，我们下篇再讲，讨论细节(<em>╹▽╹</em>)</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2019/07/16/raft-1/" class="prev">上一篇</a><a href="/2019/07/01/ca/" class="next">下一篇</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+</div></article></div></main><footer><div class="paginator"><a href="/2019/07/16/raft-1/" class="prev">PREV</a><a href="/2019/07/01/ca/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
     clientID: '0dc72a011c85518eff6a',
     clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
     repo: 'ice-storm.github.io',
