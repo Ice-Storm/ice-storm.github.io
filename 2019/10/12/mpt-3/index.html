@@ -14,7 +14,7 @@
 <h3 id="三颗树的差异"><a href="#三颗树的差异" class="headerlink" title="三颗树的差异"></a>三颗树的差异</h3><p>交易树和收据树只依赖当前的区块，而状态树是把链上所有状态都包含进去，交易树和收据树是独立的，状态树会共享树的节点。</p>
 <p>为什么状态树要包含所有链上所有的状态呢？</p>
 <p>举个例子，当一笔转账操作的发起时，需要判断发起账户是否有足够的ETH来完成这笔转账，这个时候要通过查找状态树查看对应账户的状态，但是如果为了节约空间，只保存了当前区块账户的状态，就需要逐块查找，非常影响性能，甚至这个转账交易的发起者都不存在，是一个恶意操作。</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2019/10/20/block/" class="prev">PREV</a><a href="/2019/10/12/mpt-2/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+</div></article></div></main><footer><div class="paginator"><a href="/2019/10/20/block/" class="prev">上一篇</a><a href="/2019/10/12/mpt-2/" class="next">下一篇</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
     clientID: '0dc72a011c85518eff6a',
     clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
     repo: 'ice-storm.github.io',

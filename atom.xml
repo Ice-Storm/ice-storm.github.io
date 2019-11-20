@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-11-20T11:05:46.037Z</updated>
+  <updated>2019-11-20T11:06:57.477Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="qyuan.top/2019/11/20/bitcoinScript/"/>
     <id>qyuan.top/2019/11/20/bitcoinScript/</id>
     <published>2019-11-20T10:53:29.000Z</published>
-    <updated>2019-11-20T11:05:46.037Z</updated>
+    <updated>2019-11-20T11:06:57.477Z</updated>
     
     <content type="html"><![CDATA[<p>每一笔交易除了铸币交易（coinbase）外，每一笔交易都拥有至少一个输入（TxIn）和至少一个输出（TxOut），和我们直觉上理解的交易的TxIn和TxOut应该是数字不太一样，在比特币中是以脚本的形式存在。</p>
 <a id="more"></a>
@@ -33,9 +33,9 @@
 <h5 id="公钥支付（Pay-to-Publish-Key）"><a href="#公钥支付（Pay-to-Publish-Key）" class="headerlink" title="公钥支付（Pay to Publish Key）"></a>公钥支付（Pay to Publish Key）</h5><p>输出脚本直接给出了收款人的公钥，输入脚本提供了用私钥对整个交易的签名，最后通过<code>OP_CHECKSIG</code>验证。<br>我们知道签名算法是私钥签名公钥验证，如果通过验证，则证明这个行为确实是私钥拥有者所为，在这个例子中，通过私钥对花费BTC的交易签名，而上一笔交易输出的公钥对这笔交易的私钥验证通过后，就可以证明这个交易确实是私钥拥有者做出的，并非冒牌。</p>
 <p>在比特币脚本中是这样表示的；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">input script:</div><div class="line">    OP_PUSHDATA(Sig)</div><div class="line">output script:</div><div class="line">    OP_PUSHDATA(PubKey)</div><div class="line">    OP_CHECKSIG</div></pre></td></tr></table></figure></p>
 <p>首先 <code>OP_PUSHDATA(Sig)</code>和<code>OP_PUSHDATA(PubKey)</code>将Sig和PubKey压入栈中</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bitcoinScript/2.png?raw=true" width="110%" height="50%"></p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bitcoinScript/2.png?raw=true" width="20%" height="50%"></p>
 <p>接着 <code>OP_CHECKSIG</code> 弹出栈顶两个元素验证签名</p>
-<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bitcoinScript/3.png?raw=true" width="110%" height="50%"></p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/bitcoinScript/3.png?raw=true" width="20%" height="50%"></p>
 <p>栈中结果是True，证明私钥拥有者同时也拥有花费这笔交易Out的权利。</p>
 <h5 id="公钥哈希支付（Pay-to-Public-Key-Hash）"><a href="#公钥哈希支付（Pay-to-Public-Key-Hash）" class="headerlink" title="公钥哈希支付（Pay to Public Key Hash）"></a>公钥哈希支付（Pay to Public Key Hash）</h5><p>在<code>Pay to Publish Key</code>中，输出脚本中直接暴露了下一笔交易花费者的公钥，显然是不太合理的，于是又有了第二种输出脚本的类型<code>Pay to Public Key Hash</code>。<br><code>Pay to Public Key Hash</code>类型的输出脚本直接给出了收款人公钥的哈希，输入脚本提供了用私钥对整个交易的签名，同时也提供了自己的公钥用作验证，整个过程大同小异。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">input script:</div><div class="line">    OP_PUSHDATA(Sig)  //压入签名</div><div class="line">    OP_PUSHDATA(PublicKey)  //压入公钥</div><div class="line">output script:</div><div class="line">    OP_DUP  //复制栈顶元素，再压入栈</div><div class="line">    OP_HASH160  //弹出栈顶元素，取哈希在压入栈</div><div class="line">    OP_PUSHDATA(PubKeyHash)  //压入输出脚本提供的公钥哈希</div><div class="line">    OP_EQUALVERIFY   //弹出栈顶元素，比较是否相等</div><div class="line">    OP_CHECKSIG   //公钥检查签名是否正确</div></pre></td></tr></table></figure></p>
 <h5 id="脚本哈希支付（Pay-to-Script-Hash）"><a href="#脚本哈希支付（Pay-to-Script-Hash）" class="headerlink" title="脚本哈希支付（Pay to Script Hash）"></a>脚本哈希支付（Pay to Script Hash）</h5><p>这种形式的输出脚本是收款人提供脚本（redeemScript）的哈希，到时候收款人要花费这笔交易的时候需要输入脚本的内容和签名，验证的时候分两步；</p>
