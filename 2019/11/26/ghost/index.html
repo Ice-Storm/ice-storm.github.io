@@ -1,0 +1,56 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="6A32DaUP6x"><meta name="sogou_site_verification" content="MPOhwuqxBD"><title> 以太坊Ghost协议 · Qin Yuan's blog</title><meta name="description" content="以太坊Ghost协议 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="qyuan.top/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">以太坊Ghost协议</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Nov 26, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span></div></div><div class="post-content"><p>在比特币中，每个区块的出块时间被设置为10分钟，为什么需要10分钟呢？按照常识来说，出块速度越快可以打包的交易就越多，系统的吞吐率也就越高。</p>
+<a id="more"></a>
+<p>根据前文可知，想要提高出块速度就要降低挖矿难度，我们假设这样一种场景；</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/1.png?raw=true" width="70%" height="70%"></p>
+<p>当挖矿难度降低以后，最新区块有可能被多个矿工同时挖出，比如上图中的A,B,C,D,E区块可能被网络中的不同矿工同时挖出，当A被挖出的时候，还没广播到其余矿工，其余矿工还在基于区块4继续挖矿，这样就会产生区块B,C,D,E。</p>
+<p>由于其余矿工接收到最长高区块后，就不会再接收同一高度的区块了，相当这个区块相当于将网络进行了分区，分为了5个区域A,B,C,D,E，每个矿工按照自己接收到的最长链进行挖矿，这样算力就被分散了。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/2.png?raw=true" width="70%" height="70%"></p>
+<p>这个时候不需要51%的算力，只需要21%的算力就可以快速挖出最长链，提高出块速度后链更容易产生分叉，一定程度上浪费了算力，也降低了链的安全性。</p>
+<p>甚至在更坏的情况下，频繁出现分叉，在分叉上继续出现分叉导致整个链不可用。</p>
+<h3 id="以太坊"><a href="#以太坊" class="headerlink" title="以太坊"></a>以太坊</h3><p>以太坊中的出块时间被缩短为了15s，意味着比特币中长出块时间所解决的问题都将在以太坊中暴露出来。<br>在图二中，假如区块A由矿池挖出，后续矿池的挖矿算力都会基于区块A继续挖掘，而其他节点可能基于B，C挖掘但是由于矿池网络更好，连接了更多的节点，新区块的广播更快的传播到网络中其它节点，因为这些优势，矿池的区块更可能成为最长链，而其余的的分叉区块将得不到挖矿奖励，显然不利于个人矿工或者小矿池。</p>
+<p>假设一个大型矿池A打包了区块A，继续在A的基础上挖A1，而挖出区块B的矿工为了自己的挖出的区块不被丢弃，保护自己的利益就需要继续挖B1希望能成最长链，这显然不是以太坊所希望的。</p>
+<p>聚焦一下问题；</p>
+<ul>
+<li>出块速度快导致链频繁分叉，难以确定最长链；</li>
+<li>矿池因为网络，算力优势具备了不对称的优势；</li>
+</ul>
+<p>为了解决这两个问题，以太坊引入了Ghost协议来解决这些问题。<br>以太坊中出现了频繁分叉，为了尽快确定最长链就需要尽快的合并这些分叉。</p>
+<h3 id="叔块（Uncle-block）"><a href="#叔块（Uncle-block）" class="headerlink" title="叔块（Uncle block）"></a>叔块（Uncle block）</h3><p>以太坊创造了一个新的名词叔块，如下图所示；</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/3.png?raw=true" width="70%" height="70%"></p>
+<p>对高度4的区块来说，3号区块是他的父区块，两个叔块是3号区块的兄弟区块，是4号区块的叔叔，于是，叔块就是这么得名的。</p>
+<blockquote>
+<p>虚线部分仅仅用来陈述关系，不表示有实际连接</p>
+</blockquote>
+<p>在Ghost协议中，当区块4被挖出的时候可以包含一个叔块，叔块获得7/8的出块奖励，而区块4可以得到1/32的额外奖励。</p>
+<blockquote>
+<p>一个区块最多包含两个叔父区块。</p>
+</blockquote>
+<p>但是这样做有几个问题；</p>
+<ul>
+<li>叔父区块可能不只两个，这样一次就可能不能包含全部区块；</li>
+<li>可能区块4被挖出的时候，还没有感知到叔父区块，这样到只能到挖出区块5的时候才能在包含区块4的叔父区块；</li>
+<li>可能区块4由于某些原因就是不包含叔父区块，比如和挖出叔父区块的节点有竞争关系；</li>
+</ul>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/4.png?raw=true" width="70%" height="70%"></p>
+<p>如果一个区块允许包含过多的叔块，就会导致以太坊的产出过多，币价贬值，但是又为了保护矿工利益和尽快合并临时分叉，ghost协议放宽了叔父区块的限制，比如区块5也是可以包含区块4的叔父区块。</p>
+<p>为了避免无限制的包含叔父区块，以太坊又加了这样一条限制，每一个区块只能包含自己前7个区块的叔块奖励，而且每离自己远一个区块，那个叔父区块获得的奖励就减小1/8。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/5.png?raw=true" width="70%" height="70%"></p>
+<blockquote>
+<p>叔块获得最少区块的奖励是2/8</p>
+</blockquote>
+<p>通过这样的方式就解决了上面的前两个问题，第三个问题也很好解决，因为一个矿工很难连续挖出区块，所以也可以解决。</p>
+<blockquote>
+<p>往前推7个区块是为了避免实现的复杂性，因为既要保存区块，又要记录同一高度区块的大量区块会导致状态非常复杂。</p>
+</blockquote>
+<p>还要注意的一点是包含的叔父区中的交易并不执行，叔父区块的交易不一定是非法的，但是如果执行则可能造成主链上交易变成非法交易，所以并不需要执行。</p>
+<p>包含的叔块只能是单个区块，如果在叔块后还有区块则不包含，这个也很好理解，如果是分叉的第一个区块可以理解为是巧合或者网络传播太慢，但是当感知到这个不是最长链的时候，还基于分叉挖矿则可以认为是恶意节点。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/11/20/bitcoinScript/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+    clientID: '0dc72a011c85518eff6a',
+    clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
+    repo: 'ice-storm.github.io',
+    owner: 'ice-storm',
+    admin: ['ice-storm'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+})
+gitalk.render('gitalk-container')</script><div class="copyright"><div><h4>Friends</h4><a href="https://www.xuanzhangjiong.top/">TopJohn's Blog</a>&emsp;&emsp;<a href="https://dbarobin.com">Robin</a></div><p>© 2017 - 2019 <a href="qyuan.top">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

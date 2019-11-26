@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-11-26T12:02:16.745Z</updated>
+  <updated>2019-11-26T12:21:28.312Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -14,6 +14,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>以太坊Ghost协议</title>
+    <link href="qyuan.top/2019/11/26/ghost/"/>
+    <id>qyuan.top/2019/11/26/ghost/</id>
+    <published>2019-11-26T12:16:44.000Z</published>
+    <updated>2019-11-26T12:21:28.312Z</updated>
+    
+    <content type="html"><![CDATA[<p>在比特币中，每个区块的出块时间被设置为10分钟，为什么需要10分钟呢？按照常识来说，出块速度越快可以打包的交易就越多，系统的吞吐率也就越高。</p>
+<a id="more"></a>
+<p>根据前文可知，想要提高出块速度就要降低挖矿难度，我们假设这样一种场景；</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/1.png?raw=true" width="70%" height="70%"></p>
+<p>当挖矿难度降低以后，最新区块有可能被多个矿工同时挖出，比如上图中的A,B,C,D,E区块可能被网络中的不同矿工同时挖出，当A被挖出的时候，还没广播到其余矿工，其余矿工还在基于区块4继续挖矿，这样就会产生区块B,C,D,E。</p>
+<p>由于其余矿工接收到最长高区块后，就不会再接收同一高度的区块了，相当这个区块相当于将网络进行了分区，分为了5个区域A,B,C,D,E，每个矿工按照自己接收到的最长链进行挖矿，这样算力就被分散了。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/2.png?raw=true" width="70%" height="70%"></p>
+<p>这个时候不需要51%的算力，只需要21%的算力就可以快速挖出最长链，提高出块速度后链更容易产生分叉，一定程度上浪费了算力，也降低了链的安全性。</p>
+<p>甚至在更坏的情况下，频繁出现分叉，在分叉上继续出现分叉导致整个链不可用。</p>
+<h3 id="以太坊"><a href="#以太坊" class="headerlink" title="以太坊"></a>以太坊</h3><p>以太坊中的出块时间被缩短为了15s，意味着比特币中长出块时间所解决的问题都将在以太坊中暴露出来。<br>在图二中，假如区块A由矿池挖出，后续矿池的挖矿算力都会基于区块A继续挖掘，而其他节点可能基于B，C挖掘但是由于矿池网络更好，连接了更多的节点，新区块的广播更快的传播到网络中其它节点，因为这些优势，矿池的区块更可能成为最长链，而其余的的分叉区块将得不到挖矿奖励，显然不利于个人矿工或者小矿池。</p>
+<p>假设一个大型矿池A打包了区块A，继续在A的基础上挖A1，而挖出区块B的矿工为了自己的挖出的区块不被丢弃，保护自己的利益就需要继续挖B1希望能成最长链，这显然不是以太坊所希望的。</p>
+<p>聚焦一下问题；</p>
+<ul>
+<li>出块速度快导致链频繁分叉，难以确定最长链；</li>
+<li>矿池因为网络，算力优势具备了不对称的优势；</li>
+</ul>
+<p>为了解决这两个问题，以太坊引入了Ghost协议来解决这些问题。<br>以太坊中出现了频繁分叉，为了尽快确定最长链就需要尽快的合并这些分叉。</p>
+<h3 id="叔块（Uncle-block）"><a href="#叔块（Uncle-block）" class="headerlink" title="叔块（Uncle block）"></a>叔块（Uncle block）</h3><p>以太坊创造了一个新的名词叔块，如下图所示；</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/3.png?raw=true" width="70%" height="70%"></p>
+<p>对高度4的区块来说，3号区块是他的父区块，两个叔块是3号区块的兄弟区块，是4号区块的叔叔，于是，叔块就是这么得名的。</p>
+<blockquote>
+<p>虚线部分仅仅用来陈述关系，不表示有实际连接</p>
+</blockquote>
+<p>在Ghost协议中，当区块4被挖出的时候可以包含一个叔块，叔块获得7/8的出块奖励，而区块4可以得到1/32的额外奖励。</p>
+<blockquote>
+<p>一个区块最多包含两个叔父区块。</p>
+</blockquote>
+<p>但是这样做有几个问题；</p>
+<ul>
+<li>叔父区块可能不只两个，这样一次就可能不能包含全部区块；</li>
+<li>可能区块4被挖出的时候，还没有感知到叔父区块，这样到只能到挖出区块5的时候才能在包含区块4的叔父区块；</li>
+<li>可能区块4由于某些原因就是不包含叔父区块，比如和挖出叔父区块的节点有竞争关系；</li>
+</ul>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/4.png?raw=true" width="70%" height="70%"></p>
+<p>如果一个区块允许包含过多的叔块，就会导致以太坊的产出过多，币价贬值，但是又为了保护矿工利益和尽快合并临时分叉，ghost协议放宽了叔父区块的限制，比如区块5也是可以包含区块4的叔父区块。</p>
+<p>为了避免无限制的包含叔父区块，以太坊又加了这样一条限制，每一个区块只能包含自己前7个区块的叔块奖励，而且每离自己远一个区块，那个叔父区块获得的奖励就减小1/8。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/ghost/5.png?raw=true" width="70%" height="70%"></p>
+<blockquote>
+<p>叔块获得最少区块的奖励是2/8</p>
+</blockquote>
+<p>通过这样的方式就解决了上面的前两个问题，第三个问题也很好解决，因为一个矿工很难连续挖出区块，所以也可以解决。</p>
+<blockquote>
+<p>往前推7个区块是为了避免实现的复杂性，因为既要保存区块，又要记录同一高度区块的大量区块会导致状态非常复杂。</p>
+</blockquote>
+<p>还要注意的一点是包含的叔父区中的交易并不执行，叔父区块的交易不一定是非法的，但是如果执行则可能造成主链上交易变成非法交易，所以并不需要执行。</p>
+<p>包含的叔块只能是单个区块，如果在叔块后还有区块则不包含，这个也很好理解，如果是分叉的第一个区块可以理解为是巧合或者网络传播太慢，但是当感知到这个不是最长链的时候，还基于分叉挖矿则可以认为是恶意节点。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      以太坊Ghost协议
+    
+    </summary>
+    
+      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="以太坊" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>深入理解比特币脚本</title>
@@ -1149,73 +1217,6 @@
     <summary type="html">
     
       数字证书
-    
-    </summary>
-    
-      <category term="区块链" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="密码学" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
-    
-      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
-    
-      <category term="密码学" scheme="qyuan.top/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>详解TLS/SSL运行机制</title>
-    <link href="qyuan.top/2019/06/23/tls/"/>
-    <id>qyuan.top/2019/06/23/tls/</id>
-    <published>2019-06-23T03:44:24.000Z</published>
-    <updated>2019-06-23T03:46:50.658Z</updated>
-    
-    <content type="html"><![CDATA[<p>&emsp;&emsp;<code>TLS</code>传输层安全性协议（Transport Layer Security）及其前身<code>SSL</code>安全套接层（Secure Sockets Layer）是一种安全协议，目的是为互联网通信提供安全及数据完整性保障，<code>TLS/SSL</code>协议位于网络OSI七层模型的会话层，用来加密通信。</p>
-<a id="more"></a>
-<h3 id="TLS-SSL握手过程"><a href="#TLS-SSL握手过程" class="headerlink" title="TLS/SSL握手过程"></a><code>TLS/SSL</code>握手过程</h3><p>&emsp;&emsp;第一步，客户端（Client）以明文的形式发起请求信息（client_hello），其中信息包含；</p>
-<ul>
-<li>客户端生成的随机数<code>random_C</code></li>
-<li>支持的最高<code>TLS</code>协议版本</li>
-<li>客户端支持的加密套件<code>cipher suites</code></li>
-<li>支持的压缩算法列表</li>
-<li>扩展字段</li>
-</ul>
-<blockquote>
-<p> 身份加密套件包括： 身份认证算法Au ，采用的密钥交换算法（密钥协商），对称加密算法，信息摘要算法Mac（校验信息的完整性）</p>
-</blockquote>
-<hr>
-<p>&emsp;&emsp;第二步，服务端（Server）收到客户端发来的请求以后，返回协商的信息（server_hello），其中包括</p>
-<ul>
-<li>服务端生成的随机数<code>random_S</code></li>
-<li>使用<code>TLS</code>协议的版本</li>
-<li>使用的压缩算法版本</li>
-<li>选择的加密套件<code>cipher suites</code></li>
-<li>服务端配置的对应的证书链</li>
-</ul>
-<hr>
-<p>&emsp;&emsp;第三步，客户端（Server）收到服务端发来的请求以后，首先会检查服务端证书的合法性，如果合法就会进行如下操作；</p>
-<ul>
-<li>客户端生成第三个随机数字<code>pre-master</code></li>
-<li>计算协商秘钥<code>enc_key=Func(random_C, random_S, pre-master)</code></li>
-<li>计算之前通信的所有参数的hash作为<code>sessionSecret</code></li>
-</ul>
-<p>&emsp;&emsp;将<code>sessionSecret</code>和用证书携带的公钥加密<code>pre-master</code>发送给服务器（Server）</p>
-<hr>
-<p>&emsp;&emsp;第四步，服务端（Server）收到客户端发来的请求后，会进行如下操作</p>
-<ul>
-<li>用私钥解密或者<code>pre-master</code>的值</li>
-<li>基于<code>random_S</code>，<code>random_C</code>和<code>pre-master</code>计算协商秘钥<code>enc_key=Func(random_C, random_S, pre-master)</code></li>
-<li>验证<code>sessionSecret</code></li>
-</ul>
-<p>&emsp;&emsp;服务端进行完上面的操作以后，会用协商秘钥加密<code>sessionSecret</code>作为<code>encrypted_handshake_message</code>消息发送给客户端。</p>
-<hr>
-<p>&emsp;&emsp;第五步，客户端（Client）接收到<code>encrypted_handshake_message</code>消息以后，会用自己计算出的协商秘钥解密<code>encrypted_handshake_message</code>查看里面<code>sessionSecret</code>是否和自己生成的一致，如果一致则用协商出来的秘钥加密后续的通信。</p>
-<h3 id="双向认证"><a href="#双向认证" class="headerlink" title="双向认证"></a>双向认证</h3><p>&emsp;&emsp;上面的整个过程，都是客户端单向认证服务端，也是最为常用的场景。同时，服务端也可以要求验证客户端，比较常见的场景就是大额网银汇款转账会需要在电脑上插入<code>U盾</code>。<br>&emsp;&emsp;<code>U盾</code>中包含银行签发的证书用来验证客户端。<br>&emsp;&emsp;双向认证在单向认证第二步的时候，服务器会要求客户端发送证书，来校验客户端证书有效性。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      TLS/SSL秘钥协商算法
     
     </summary>
     
