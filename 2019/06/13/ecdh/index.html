@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="6A32DaUP6x"><meta name="sogou_site_verification" content="MPOhwuqxBD"><title> ECDH秘钥协商算法原理 · Qin Yuan's blog</title><meta name="description" content="ECDH秘钥协商算法原理 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="qyuan.top/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">ECDH秘钥协商算法原理</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Jun 13, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span><a href="/tags/区块链" class="post-title-link"><span style="margin-left:10px;color:blue">区块链</span></a><a href="/tags/密码学" class="post-title-link"><span style="margin-left:10px;color:blue">密码学</span></a></div></div><div class="post-content"><p>&emsp;&emsp;<code>ECDH</code>全称是椭圆曲线迪菲-赫尔曼秘钥交换（Elliptic Curve Diffie–Hellman key Exchange），主要是用来在一个不安全的通道中建立起安全的共有加密资料，一般来说交换的都是<code>私钥</code>，这个密钥一般作为“对称加密”的密钥而被双方在后续数据传输中使用。</p>
+<a id="more"></a>
+<p>&emsp;&emsp;<code>ECDH</code>是建立在这样一个前提之上的，给定椭圆曲线上的一个点P，一个整数k，求Q=KP很容易；但是通过Q，P求解K很难。</p>
+<h3 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h3><p>&emsp;&emsp;我们通过一个经典的场景，Alice和Bob要在一条不安全的线路上交换秘钥，交换的秘钥不能被中间人知晓。<br>&emsp;&emsp;首先，双方约定使用<code>ECDH</code>秘钥交换算法，这个时候双方也知道了<code>ECDH</code>算法里的一个大素数<code>P</code>，这个<code>P</code>可以看做是一个算法中的常量。</p>
+<blockquote>
+<p><code>P</code>的位数决定了攻击者破解的难度</p>
+</blockquote>
+<p>&emsp;&emsp;还有一个整数<code>g</code>用来辅助整个秘钥交换，<code>g</code>不用很大，一般是2或者5，双方知道<code>g</code>和<code>p</code>之后就开始了<code>ECDH</code>交换秘钥的过程了。</p>
+<hr>
+<p>&emsp;&emsp;Alice知道了共用参数<code>p</code>和<code>g</code>，生成私有整数<code>a</code>作为私钥，公钥算法一般是公钥加密，私钥解密，公钥给对方来加密数据，拿到密文后私钥解密查看内容正确性，这个时候Alice直接通过线路告诉Bob自己的私钥<code>a</code>显然既不合理也是一件风险很大的事。</p>
+<p>&emsp;&emsp;这个时候Alice需要利用<code>p</code>，<code>g</code>，<code>a</code>通过公式<code>g^a mod p = A</code>生成A作为公钥传递。</p>
+<hr>
+<p>&emsp;&emsp; Bob通过链路收到Alice发来的<code>p</code>，<code>g</code>，<code>A</code>，知道了Alice的公钥<code>A</code>。这个时候Bob也生成自己的私钥<code>b</code>，然后通过公式<code>g^b mod p = B</code>生成自己公钥<code>B</code>。<br>&emsp;&emsp; 在发送公钥<code>B</code>前，Bob通过<code>A^b mod p = K</code>生成K作为公共秘钥，但是并不发送给Alice，只通过链路发送<code>B</code>。</p>
+<hr>
+<p>&emsp;&emsp; Alice收到Bob发来的公钥<code>B</code>以后，同样通过<code>B^a mod p = K</code>生成公共秘钥K，这样Alice和Bob就通过不传递私钥<code>a</code>和<code>b</code>完成了对公共秘钥K的协商。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>&emsp;&emsp; 我们通过代入具体的数字来重复一下上面的过程。</p>
+<p>&emsp;&emsp;1. Alice和Bob同意使用质数p和整数g：<br>&emsp;&emsp; p = 83, g = 8<br>&emsp;&emsp;<br>&emsp;&emsp; 2. Alice选择秘钥 a = 9, 生成公钥  g^a mod p = A 并发送<br>&emsp;&emsp; (8^9) mod 83 = 5<br>&emsp;&emsp;<br>&emsp;&emsp; 3. Bob选择秘钥 b = 21, 生成公钥 A^b mod p = K 并发送<br>&emsp;&emsp; (8^21) mod 83 = 18<br>&emsp;&emsp;<br>&emsp;&emsp; 4. Alice计算 B^a mod p = K<br>&emsp;&emsp; 18^9 mod 83 = 24<br>&emsp;&emsp;<br>&emsp;&emsp; 5. Bob计算 B^a mod p = K<br>&emsp;&emsp;  5^21 mod 83 = 24<br>&emsp;&emsp;<br>&emsp;&emsp; 至此<code>24</code>就是双方协商出来的秘钥。</p>
+<h3 id="协议所面临的问题"><a href="#协议所面临的问题" class="headerlink" title="协议所面临的问题"></a>协议所面临的问题</h3><p>&emsp;&emsp;由于 ECDH 密钥交换协议不验证公钥发送者的身份，因此无法阻止中间人攻击。如果监听者 Mallory 截获了 Alice 的公钥，就可以替换为他自己的公钥，并将其发送给 Bob。Mallory 还可以截获 Bob 的公钥，替换为他自己的公钥，并将其发送给 Alice。这样，Mallory 就可以轻松地对 Alice 与 Bob 之间发送的任何消息进行解密。他可以更改消息，用他自己的密钥对消息重新加密，然后将消息发送给接收者。<br>&emsp;&emsp;为了解决此问题，Alice 和 Bob 可以在交换公钥之前使用数字签名对公钥进行签名。有两种方法可以实现此目的：</p>
+<ul>
+<li><p>用安全的媒体（例如语音通信或可信载运商）在双方之间传输数字签名密钥。</p>
+</li>
+<li><p>使用公共证书颁发机构 (CA) 向双方提供可信数字签名密钥。</p>
+</li>
+</ul>
+<h3 id="区块链中的应用场景"><a href="#区块链中的应用场景" class="headerlink" title="区块链中的应用场景"></a>区块链中的应用场景</h3><p>&emsp;&emsp;当多个参与方共享同一个链路的时候，联盟链各参与方想要在同一个链路上实现通性的隔离，使用<code>ECDH</code>算法既可以实现TCP链接的复用，避免频繁建立大量链接，又可以保证同一链接间的通信隔离。</p>
+<p>&emsp;&emsp;各参与方的身份在加入网络前已经有MSP（Membership Service Provider）来颁发验证过，这样就可以规避<code>ECDH</code>协议的缺陷。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/06/23/tls/" class="prev">PREV</a><a href="/2019/06/02/txpool/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+    clientID: '0dc72a011c85518eff6a',
+    clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
+    repo: 'ice-storm.github.io',
+    owner: 'ice-storm',
+    admin: ['ice-storm'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+})
+gitalk.render('gitalk-container')</script><div class="copyright"><div><h4>Friends</h4><a href="https://www.xuanzhangjiong.top/">TopJohn's Blog</a>&emsp;&emsp;<a href="https://dbarobin.com">Robin</a></div><p>© 2017 - 2019 <a href="qyuan.top">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

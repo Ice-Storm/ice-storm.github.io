@@ -1,0 +1,26 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="6A32DaUP6x"><meta name="sogou_site_verification" content="MPOhwuqxBD"><title> 默克尔证明 · Qin Yuan's blog</title><meta name="description" content="默克尔证明 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="qyuan.top/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">默克尔证明</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Nov 1, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span><a href="/tags/区块链" class="post-title-link"><span style="margin-left:10px;color:blue">区块链</span></a><a href="/tags/存储" class="post-title-link"><span style="margin-left:10px;color:blue">存储</span></a></div></div><div class="post-content"><p>假设有这样一种场景需要用到比特币支付，支付完成以后我需要向对方证明这笔交易已经写到区块中了，比较容易想到的办法就是拿到打包交易的对应区块，然后对比区块中的所有交易来确认是否已经被打包其中。</p>
+<a id="more"></a>
+<p>但是在比特币或者以太坊的场景下，一个区块大概有两三千笔交易，一个交易又包含若干字段，如果逐一比较交易不仅速度慢，而且不安全，因为拿单一的区块你无法知道拿到的块的真伪。</p>
+<p>而默克尔证明提供了一种仅需链中全量区块头信息就可以证明交易是否存在某一区块中的方法。</p>
+<blockquote>
+<p>全量保存区块头是为了保证安全性，而且区块头很小，非常适合在一些移动设备存储。</p>
+</blockquote>
+<h5 id="默克尔证明"><a href="#默克尔证明" class="headerlink" title="默克尔证明"></a>默克尔证明</h5><p>默克尔证明基于默克尔树。</p>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/merkleproof/1.png?raw=true" width="100%" height="100%"></p>
+<p>如果我们知道了根哈希，也就是紫色的这个节点包含的值，需要证明红色的节点包含的<code>Peach</code>是否在这个集合中，仅需要提供绿色节点包含的值就可以。<br>我们可以计算出<code>Peach</code>的哈希值，然后依次与绿色节点包含的哈希值两两计算哈希，最终就可以得到根哈希，根哈希一致则证明<code>Peach</code>在这个区块中。</p>
+<h5 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h5><ul>
+<li>无需知道其他节点的值是什么就可以证明特定节点是否在集合中。</li>
+<li>仅存储默克尔证明消耗很小的空间。</li>
+<li>判断一笔交易是否在区块中的消耗很低。</li>
+</ul>
+<h5 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h5><p>轻节点只包含区块头，也就是只有交易树的根哈希值，当A需要向轻节点证明一笔交易已经打包到指定区块时，只需要提供这笔交易和对应路径上的哈希值即可，这样轻节点就可以在不保存区块体的情况下证明了这笔交易已经上链不可更改了。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/11/04/utxo-account/" class="prev">PREV</a><a href="/2019/10/25/gossip/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+    clientID: '0dc72a011c85518eff6a',
+    clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
+    repo: 'ice-storm.github.io',
+    owner: 'ice-storm',
+    admin: ['ice-storm'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+})
+gitalk.render('gitalk-container')</script><div class="copyright"><div><h4>Friends</h4><a href="https://www.xuanzhangjiong.top/">TopJohn's Blog</a>&emsp;&emsp;<a href="https://dbarobin.com">Robin</a></div><p>© 2017 - 2019 <a href="qyuan.top">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

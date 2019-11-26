@@ -1,0 +1,32 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="6A32DaUP6x"><meta name="sogou_site_verification" content="MPOhwuqxBD"><title> P2P网络核心技术之Gossip协议 · Qin Yuan's blog</title><meta name="description" content="P2P网络核心技术之Gossip协议 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="qyuan.top/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">P2P网络核心技术之Gossip协议</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Oct 25, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span><a href="/tags/区块链" class="post-title-link"><span style="margin-left:10px;color:blue">区块链</span></a><a href="/tags/以太坊" class="post-title-link"><span style="margin-left:10px;color:blue">以太坊</span></a></div></div><div class="post-content"><p>在Hyperledger Fabric中，节点间同步数据采用的是<code>Gossip</code>协议，当节点因为异常缺少账本数据时，可以通过<code>Gossip</code>协议从邻近的节点获得账本数据，保证集群中节点账本的一致性。</p>
+<a id="more"></a>
+<h3 id="Gossip协议"><a href="#Gossip协议" class="headerlink" title="Gossip协议"></a>Gossip协议</h3><p>Gossip是流言的意思，很好的诠释了协议的过程，协议传输数据也是采用了类似流言传播的方式在集群中扩散。</p>
+<p>Gossip是一种去中心化思路的分布式协议，解决集群中的数据传播和状态一致性的问题。</p>
+<h5 id="协议流程"><a href="#协议流程" class="headerlink" title="协议流程"></a>协议流程</h5><ul>
+<li>节点A周期性的选择相邻的k个节点，并且向这K个节点发送自身存储的数据；</li>
+<li>K个节点接收到A发送过来的数据后，发现自身没有则存储下来，如果有则丢掉，并且重复节点A的过程。</li>
+</ul>
+<p><img src="https://github.com/Ice-Storm/ice-storm.github.io/blob/master/images/gossip/1.gif?raw=true" width="90%" height="50%"></p>
+<p>在节点A向节点K发送数据的时候有三种方式；</p>
+<ul>
+<li><code>push</code>模式，节点A将数据（key，version，value）推送给K，K更新version比自己新的数据。</li>
+<li><code>pull</code>模式，节点A将数据（key，version）推送给K，K将本地version比A新的数据推送给A。</li>
+<li><code>push/pull</code>模式，先采用push模式更新K，然后采用pull模式更新A。</li>
+</ul>
+<p>push模式需要通信一次，pull模式需要两次，pull/push模式需要通信三次，而从最终一致性的收敛速度也与通信次数成正比。将消息传播到所有节点的时间复杂度为log(n)。  </p>
+<h5 id="Gossip缺陷"><a href="#Gossip缺陷" class="headerlink" title="Gossip缺陷"></a>Gossip缺陷</h5><ul>
+<li><p>消息的延迟，由于 Gossip 协议中，节点只会随机向少数几个节点发送消息，消息最终是通过多个轮次的散播而到达全网的，因此使用 Gossip 协议会造成不可避免的消息延迟。不适合用在对实时性要求较高的场景。</p>
+</li>
+<li><p>消息冗余，Gossip 协议规定，节点会定期随机选择周围节点发送消息，而收到消息的节点也会重复该步骤，因此就不可避免的存在消息重复发送给同一节点的情况，造成了消息的冗余，同时也增加了收到消息的节点的处理压力。而且，由于是定期发送，因此，即使收到了消息的节点还会反复收到重复消息，加重了消息的冗余。</p>
+</li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/11/01/merkle-proof/" class="prev">PREV</a><a href="/2019/10/20/block/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+    clientID: '0dc72a011c85518eff6a',
+    clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
+    repo: 'ice-storm.github.io',
+    owner: 'ice-storm',
+    admin: ['ice-storm'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+})
+gitalk.render('gitalk-container')</script><div class="copyright"><div><h4>Friends</h4><a href="https://www.xuanzhangjiong.top/">TopJohn's Blog</a>&emsp;&emsp;<a href="https://dbarobin.com">Robin</a></div><p>© 2017 - 2019 <a href="qyuan.top">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>

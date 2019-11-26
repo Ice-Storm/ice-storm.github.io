@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="baidu-site-verification" content="6A32DaUP6x"><meta name="sogou_site_verification" content="MPOhwuqxBD"><title> 比特币挖矿原理 · Qin Yuan's blog</title><meta name="description" content="比特币挖矿原理 - Qin Yuan"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="qyuan.top/atom.xml" title="Qin Yuan's blog"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"><span style="font-size: 20px;margin-left: 20px;margin-top: -46px;display: inline-block;vertical-align: middle;">清源的博客~</span></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">文章</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">归档</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">关于我</a></li><li class="nav-list-item"><a href="https://github.com/Ice-Storm" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">比特币挖矿原理</h1><div class="post-info"></div><div style="font-size:14px;color:#aaa;">Author: <span style="display:inline-block;margin-left:10px">Qin Yuan</span></div><div style="font-size:14px;color:#aaa;"><span>Date: <span style="display:inline-block;margin-left:21px">Nov 11, 2019</span></span><div>Tag:<span style="display:inline-block;margin-left:21px"></span><a href="/tags/区块链" class="post-title-link"><span style="margin-left:10px;color:blue">区块链</span></a><a href="/tags/比特币" class="post-title-link"><span style="margin-left:10px;color:blue">比特币</span></a></div></div><div class="post-content"><p>比特币网络中，源源不断的收到交易，需要节点不断的打包这些交易，而网络中的所有节点都是对等的，如何判断谁可以打包这些交易，如何避免重复打包这些交易呢？</p>
+<a id="more"></a>
+<p>这个时候就需要用到<code>工作量证明（PoW，Proof-of-Work）</code>的方式决定记账权。</p>
+<p>网络中的任何全节点，都可以试图创建区块，但区块只有在至少满足下列条件时创建的区块才会被其他节点认可和接受。</p>
+<ul>
+<li>区块中包含的交易都是合法的；</li>
+<li>区块哈希要小于等于一个目标值；</li>
+</ul>
+<p>要满足第一个条件很简单，节点只要将每笔交易都验证一遍，丢弃掉不合法的交易即可。但要满足第二个条件就需要挖矿。</p>
+<h3 id="挖矿"><a href="#挖矿" class="headerlink" title="挖矿"></a>挖矿</h3><p>比特币挖矿就是找到一个随机数（Nonce）参与哈希运算Hash（Block Header），使得最后得到的哈希值符合难度要求，用公式表示就是<code>Hash（Block Header）&lt;= target</code></p>
+<blockquote>
+<p>比特币采用的哈希算法是 SHA-256 ，也就是说最后会产生256位的输出，一共2^256种可能的取值。</p>
+</blockquote>
+<p>最后得到的哈希值小于target的意思是把哈希后得到的bytes转换成数字后小于target转换成的数字。</p>
+<p>举个例子，直观的感受一下挖矿的难度;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">SHA-256计算123的值</div><div class="line">a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3</div><div class="line"></div><div class="line">下面这段字符是比特币第1000个区块的哈希（2009年1月产生）；        </div><div class="line">00000000c937983704a73af28acdec37b049d214adbda81d7e2a3dd146f6ed09</div><div class="line">可以看到前面有8个0，虽然哈希值的生成是随机的，但是生成前面有8个0的值对计算机穷举来说也并不算太难。</div><div class="line"></div><div class="line">再看一下这段字符，是比特币第560000个区块的哈希(2019年1月产生)；</div><div class="line">0000000000000000002c7b276daf6efb2b6aa68e2ce3be67ef925b3264ae7122</div><div class="line">可以看到前面有18个0，要生成满足这个条件的哈希对于普通电脑来说几乎是不可能完成的任务了。</div></pre></td></tr></table></figure></p>
+<p>简单来看挖矿难度的高低就是生成区块头的哈希值有多少0。</p>
+<h3 id="挖矿难度"><a href="#挖矿难度" class="headerlink" title="挖矿难度"></a>挖矿难度</h3><p>在比特币系统中出块时间被设置为一个常数10分钟，但是挖出区块的速度并不是固定的，而是随着挖矿难度的变化在10分钟上下浮动， 挖矿难度越大，出块时间就越长，为了得到相对平均的出块时间，需要动态调整挖矿难度。<br>比特币每产生2016个区块调整一次挖矿难度，一个块10分钟，2016个块大概是两周的时间，而调整挖矿难度的这些逻辑都在代码中，当大多数诚实节点采用这个策略的时候整个网络就会自动遵循这个策略。</p>
+<p>挖矿难度的计算公式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">diffculty = difficulty_1_target / target</div></pre></td></tr></table></figure></p>
+<p>此处的 difficulty_1_target 为一个常数，非常大的一个数字（ 2^(256-32)−1 ）。表示挖矿的初始难度，目标值越小，区块生成难度越大。</p>
+<blockquote>
+<p> 2^(256-32)−1 是比特币的初始难度，是前2016个块的难度。 </p>
+</blockquote>
+<p>这个难度被存储在比特币的区块头nBits字段中，当有恶意节点篡改这个策略时，挖矿产生的区块头的哈希值就会和诚实节点产生冲突，不会被接收，白白浪费了算力。</p>
+<blockquote>
+<p>因为策略不同，也就是nBits不同，恶意节点产生的区块哈希无法被诚实节点验证。</p>
+</blockquote>
+<h5 id="调整出块时间"><a href="#调整出块时间" class="headerlink" title="调整出块时间"></a>调整出块时间</h5><p>比特币系统中区块的生产速度是根据之前产生区块速度调整的，之前出块速度大于10分钟，则认为需要降低难度，则需要提高第一个公式中target的值，而target则通过如下公式计算；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">target  =  target  *  ( actual time  /  excepted time )</div></pre></td></tr></table></figure></p>
+<p>actual time是实际产生区块的时间，excepted time是期望出块时间（2016块*10分钟），actual time有上下限，actual time最多8周，最小二分之一周。</p>
+<h3 id="挖矿算法"><a href="#挖矿算法" class="headerlink" title="挖矿算法"></a>挖矿算法</h3><p>比特币中<code>nBits</code>标识了挖矿的难度，也就是说这个区块头进行SHA-256哈希算法后得到的bytes转换成数字后要小于这个难度，而SHA-256计算后的结果有256位，如果直接存储需要32个字节比较占用空间，所以采用了一种压缩算法。</p>
+<h5 id="压缩算法"><a href="#压缩算法" class="headerlink" title="压缩算法"></a>压缩算法</h5><p><code>nBits</code>有4个字节32位，将SHA-256计算得到的值经过如下算法压缩到32位；</p>
+<ol>
+<li>将数字转换为 256 进制。</li>
+<li>如果第一位数字大于 127（0x7f），则前面添加 0。</li>
+<li>压缩结果中的第一位存放该256进制数的位数。</li>
+<li>后面三个数存放该256进制数的前三位，如果不足三位，从后补零。</li>
+</ol>
+<p>举个例子，将十进制1000压缩;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1. 1000转换256进制数，1000 = 3 * 256 + 232 = 3*256^(2-1) + 232*256^(1-1)</div><div class="line">2. 3小于127，不需要补0，跳过</div><div class="line">3. 从第一部看到1000转换成256位数有2位，压缩结果第一位应该存放2</div><div class="line">4. 因为只有两位，所以最后一位补0，得到存放的值为 [2, 3, 232, 0]十进制，转换十六进制 [0x02, 0x03, 0xe8, 0x00] 合并存储到nbits为 0x0203e800</div></pre></td></tr></table></figure></p>
+<h5 id="难度计算"><a href="#难度计算" class="headerlink" title="难度计算"></a>难度计算</h5><p>在第一个公式中<code>difficulty_1_target</code>的值为 2^(256-32)-1,转换成256进制为；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</div></pre></td></tr></table></figure></p>
+<p>第一位大于0x7f，前面补0，变为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</div></pre></td></tr></table></figure></p>
+<p>其长度等于 28+1=29 (0x1d)，且长度超过三位，无需补零，则压缩结果为：0x1d00FFFF，因为压缩存储容量只有才4个字节，前两字节已经被长度和添加的 00 所占用，只剩下2个字节来存储数字，这样后面的26个 FF 值被丢弃。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">T=0x00FFFF * 256^(0x1b-3) = 0x00000000FFFF0000000000000000000000000000000000000000000000000000</div></pre></td></tr></table></figure></p>
+<p>比特币中的difficulty就是0x1d00FFFF，如果区块中的nBits为0x1d00FFFF则说明这个区块挖矿难度为最小挖矿难度1.</p>
+<p>实际上专业的矿池程序会保留被截断的FF：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</div></pre></td></tr></table></figure></p>
+<p>我们算一下比特币101799号区块的挖矿难度，通过区块链浏览器可以看到101799号区块的nBits为0x1b0404cb<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">D = 0x00000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF / 0x00000000000404CB000000000000000000000000000000000000000000000000 = 16307.669773817162 (pdiFF)</div></pre></td></tr></table></figure></p>
+<p><code>pdiFF</code>也被称为矿池难度。</p>
+<h3 id="算力"><a href="#算力" class="headerlink" title="算力"></a>算力</h3><p>为了找到符合条件的值在挖矿的时候需要不断的调整区块头中Nonce的值，但是又会有一个问题，在比特币中Nonce的值是32位的，如果挖矿难度太大，就算穷尽Nonce的所有可能还是不能算出符合条件的值。</p>
+<h5 id="铸币交易"><a href="#铸币交易" class="headerlink" title="铸币交易"></a>铸币交易</h5><p>在一个区块产生的时候，会有一个铸币交易（coinbase），也就是矿工为自己铸币，产生新的比特币。</p>
+<p>铸币交易没有UTXO输入，只有输出指向自己的比特币地址，当挖矿成功，这个区块被网络接收的时候，新产生的币就转移到这个矿工地址了。</p>
+<p>看一下铸币交易包含的字段；</p>
+<ul>
+<li>transaction hash：“交易哈希”字段32个字节全部填充0（因为其没有UTXO输入）；</li>
+<li>ouput index：“交易输出索引”字段全部填充0xFF(十进制的255)；</li>
+<li>coinbase data：coinbase数据长度最小2字节，最大100字节。除了开始的几个字节外，矿工可以任意使用coinbase的其他部分，随意填充任何数据。以创世块为例，中本聪在coinbase中填入了这样的数据“The Times 03/Jan/ 2009 -Chancellor on brink of second bailout for banks“；</li>
+<li>coinbase data size：coinbase数据大小；</li>
+<li>sequence number：现在未使用，设置为0xffffffff</li>
+</ul>
+<p>可以看到铸币交易的coinbase data字段是我们可以控制的，当Nonce不能满足挖矿难度的时候，我们可以通过调整coinbase data字段，从而影响区块头的默克尔树根的值，提供更多的可能来满足挖矿难度的要求。</p>
+<h5 id="算力单位"><a href="#算力单位" class="headerlink" title="算力单位"></a>算力单位</h5><p>通过上面的流程，进行一次可能的挖矿尝试被称为<code>H</code>。<br>1 H/s   = 每秒可执行一次哈希运算。<br>1 KH/s = 每秒1,000哈希（一千次）。<br>1 MH/s = 每秒1,000,000次哈希（百万次）。<br>1 GH/s = 每秒1,000,000,000次哈希（十亿次）。<br>1 TH/s = 每秒1,000,000,000,000次哈希（万亿次）。<br>1 PH/s = 每秒1,000,000,000,000,000次哈希。<br>1 EH/s = 每秒1,000,000,000,000,000,000次哈希。</p>
+<h3 id="挖矿收益"><a href="#挖矿收益" class="headerlink" title="挖矿收益"></a>挖矿收益</h3><p>矿机挖矿的时候就会出现很长的时间找不到符合条件的哈希值，如果找不到哈希值不能打包区块就没有收益，显然对矿工十分不友好，但是如果挖到就像中彩票一样获得非常丰厚的回报。</p>
+<h5 id="矿池"><a href="#矿池" class="headerlink" title="矿池"></a>矿池</h5><p>为了避免单个矿工挖矿收益的不稳定性，就出现了矿池，矿池集合了大量的矿工，平均挖矿的收益，避免了挖矿收益的不稳定性。<br>矿池组织大量的矿工挖矿面临很重要的一个问题就是如何把高难度计算哈希的任务拆解成相对简单的任务，发送给单个矿工，回顾之前挖矿难度的计算，可以简单的认为前面0的多少表明了挖矿的难易。<br>0越多，挖矿难度越高，为了降低挖矿难度我们就要增加挖矿哈希0的数量，举个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">假设挖矿目标值  0x000abc，只要满足这个值就可以打包区块获得挖矿收益；</div><div class="line">降低挖矿难度为 0x001abc，发送给矿工，矿工只要计算区块头满足这个相对低一点的难度就可以得到一个分片（shared），但是单个矿工挖到这个简单难度的块是无法发布到整个网络中的，但是矿池可以把这个分片记录下来，作为以后给这个矿工奖励的凭证。</div><div class="line">0x001abc是0x000abc的子集，只要子集足够多总有一个会满足目标值。</div><div class="line">当有一个矿工挖出一个满足目标值之后就可以获得挖矿收益，而挖矿就可以根据矿工分片多少来获得收益。</div><div class="line"></div><div class="line">矿工收益 = 挖矿收益 / 挖到的分片数量</div></pre></td></tr></table></figure></p>
+<p>但是现在还有一个问题没有解决，单个矿工挖到目标值以后如果私吞收益，私自广播区块怎么办？</p>
+<p>矿池有集中托管式的，也有分布式的。</p>
+<ul>
+<li>集中托管式矿池，矿工可以把挖矿的机器托管给矿池，由矿池统一操作维护，只需要支付一些电费管理费即可，这样就避免了私自广播。</li>
+<li>分布式矿池，矿工将机器自行管理，通过矿池协议从网络连接矿池即可，这样就会出现私自广播的可能。</li>
+</ul>
+<p>回顾一下铸币交易<code>coinbase</code>，可以看到有<code>output</code>字段，UTXO模型中币的来源都是上一个交易的output，所以可以把铸币交易的output字段设置为矿池的地址，然后随机生成一些<code>coinbase data</code>的填充后生成区块头的默克尔树，最后发由矿工去尝试目标值。</p>
+<p>通过这样的方式，即使矿工找到满足条件的哈希值，铸币交易的地址也是矿池的地址，私自广播区块没有任何收益，如果调整铸币交易的地址，这样又回到了独立挖矿的场景。</p>
+<h5 id="全网算力"><a href="#全网算力" class="headerlink" title="全网算力"></a>全网算力</h5><p>如果要获知全网算力，可以通过出块时间，挖矿难度大致反推出全网算力。</p>
+<h3 id="区块确认"><a href="#区块确认" class="headerlink" title="区块确认"></a>区块确认</h3><p>当一个区块产生之后，它不是立即可信的，网络上的节点总是相信最长的区块链，当一条交易记录被打包进一个区块之后，就有了一个确认，而这个区块所在的链后面被再加入一个区块，就是第二个确认，如此下去，一个交易有了6个确认，我们就认为这个交易已经确定了，会被永远记录在区块链中。<br>为什么是6个确认呢？因为每一个确认就是一个挖矿过程，需要大量的工作量证明，因此，这6个区块被同一个矿工创建的可能性微乎其微（可以说是不可能），因此矿工伪造交易也基本不可能。</p>
+<p>由于比特币的区块平均产生时间是10分钟，所以一个交易要1小时左右才能保证成功（最快），不过也不是所有的系统都这样认为，有些网站在接受比特币支付时，认为4个确认就可以给客户发货了，区块确认越多则越难被逆转。</p>
+<h3 id="区块广播"><a href="#区块广播" class="headerlink" title="区块广播"></a>区块广播</h3><p>在区块链中，为了尽快收到其他节点的信息，节点间并不是直接传递区块信息的。<br>节点向附近节点发送一个<code>Inv</code>消息，Inv消息中包含已经被发送者（sender）接收并验证过的“交易记录的哈希”、以及“区块哈希”。接收者（receiver）收到Inv消息后，如果他还尚未从其他节点收到过相同的信息，他会发送一个getdata消息给发送者，要求得到交易记录及区块哈希包含的具体信息。此时，区块和交易记录的信息才会进行整体传递。<br>其中<code>Inv</code>消息结构如下；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">type MsgInv struct &#123;</div><div class="line">    InvList []*InvVect</div><div class="line">&#125;</div><div class="line"></div><div class="line">type InvVect struct &#123;</div><div class="line">    Type InvType // Type of data</div><div class="line">    Hash chainhash.Hash // Hash of the data</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+</div></article></div></main><footer><div class="paginator"><a href="/2019/11/20/bitcoinScript/" class="prev">PREV</a><a href="/2019/11/04/utxo-account/" class="next">NEXT</a></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css"><div id="gitalk-container"></div><script src="https://unpkg.com/gitalk/dist/gitalk.min.js" crossorigin="anonymous" language="JavaScript"></script><script>var gitalk = new Gitalk({
+    clientID: '0dc72a011c85518eff6a',
+    clientSecret: '0ae5e09dca1b971dad10c7262e669c9a82ebf3f9',
+    repo: 'ice-storm.github.io',
+    owner: 'ice-storm',
+    admin: ['ice-storm'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+})
+gitalk.render('gitalk-container')</script><div class="copyright"><div><h4>Friends</h4><a href="https://www.xuanzhangjiong.top/">TopJohn's Blog</a>&emsp;&emsp;<a href="https://dbarobin.com">Robin</a></div><p>© 2017 - 2019 <a href="qyuan.top">Qin Yuan</a> &emsp;<script src="https://s19.cnzz.com/z_stat.php?id=1263032208&amp;web_id=1263032208" language="JavaScript"></script></p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-65933410-1",'auto');ga('send','pageview');</script></body></html>
