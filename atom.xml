@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="qyuan.top/"/>
-  <updated>2019-11-26T12:21:28.312Z</updated>
+  <updated>2019-11-26T12:23:30.186Z</updated>
   <id>qyuan.top/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="qyuan.top/2019/11/26/ghost/"/>
     <id>qyuan.top/2019/11/26/ghost/</id>
     <published>2019-11-26T12:16:44.000Z</published>
-    <updated>2019-11-26T12:21:28.312Z</updated>
+    <updated>2019-11-26T12:23:30.186Z</updated>
     
     <content type="html"><![CDATA[<p>在比特币中，每个区块的出块时间被设置为10分钟，为什么需要10分钟呢？按照常识来说，出块速度越快可以打包的交易就越多，系统的吞吐率也就越高。</p>
 <a id="more"></a>
@@ -80,6 +80,10 @@
     
       <category term="以太坊" scheme="qyuan.top/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
     
+    
+      <category term="区块链" scheme="qyuan.top/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/"/>
+    
+      <category term="以太坊" scheme="qyuan.top/tags/%E4%BB%A5%E5%A4%AA%E5%9D%8A/"/>
     
   </entry>
   
