@@ -956,7 +956,7 @@
     <link href="qyuan.top/2019/08/13/pbft-1/"/>
     <id>qyuan.top/2019/08/13/pbft-1/</id>
     <published>2019-08-13T13:40:19.000Z</published>
-    <updated>2019-08-14T13:01:29.965Z</updated>
+    <updated>2021-01-20T12:38:34.394Z</updated>
     
     <content type="html"><![CDATA[<p>&emsp;&emsp;<code>PBFT</code>算法和<code>Raft</code>算法解决的核心问题都是在分布式环境下如何保持集群状态的一致性，简而言之就是一组服务，给定一组操作，最后得到一致的结果。</p>
 <a id="more"></a>
@@ -978,7 +978,7 @@
 <li><code>m</code>为客户端发来的消息。</li>
 </ol>
 </li>
-<li><p><code>副本(backup)</code>收到主节点请求后，会对消息进行检查，检查通过会存储在本节点。当节点收到<code>2f+1</code>（包括自己）个相同的消息后，会进入<code>PREPARE</code>状态，广播消息<code>&lt; &lt;PREPARA, v, n, d, i&gt; &gt;</code>，其中<code>i</code>是本节点的编号。对消息的有效性有如下检查：</p>
+<li><p><code>副本(backup)</code>收到主节点请求后，会对消息进行检查，检查通过后会将消息存储在本节点，并且变更自身状态到<code>PREPARE</code>状态。状态变更完成后，节点广播消息<code>&lt; &lt;PREPARA, v, n, d, i&gt; &gt;</code>，其中<code>i</code>是本节点的编号。对消息的有效性有如下检查：</p>
 <ol>
 <li>检查收到的消息体中摘要<code>d</code>，是否和自己对<code>m</code>生成的摘要一致，确保消息的完整性。</li>
 <li>检查<code>v</code>是否和当前视图<code>v</code>一致。</li>

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>qyuan.top/2019/08/13/pbft-1/</loc>
+    <lastmod>2021-01-20</lastmod>
+  </url>  <url>
     <loc>qyuan.top/2019/11/26/ghost/</loc>
     <lastmod>2019-11-26</lastmod>
   </url>  <url>
@@ -48,9 +51,6 @@
   </url>  <url>
     <loc>qyuan.top/2019/08/25/pbft-2/</loc>
     <lastmod>2019-08-25</lastmod>
-  </url>  <url>
-    <loc>qyuan.top/2019/08/13/pbft-1/</loc>
-    <lastmod>2019-08-14</lastmod>
   </url>  <url>
     <loc>qyuan.top/2019/08/03/raft-2/</loc>
     <lastmod>2019-08-03</lastmod>
